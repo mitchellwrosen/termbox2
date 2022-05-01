@@ -266,3 +266,39 @@ _TB_ERR_RESIZE_SELECT = _TB_ERR_RESIZE_POLL
 _TB_FUNC_EXTRACT_PRE, _TB_FUNC_EXTRACT_POST :: Int
 _TB_FUNC_EXTRACT_PRE = 0
 _TB_FUNC_EXTRACT_POST = 1
+
+foreign import ccall unsafe "tb_clear"
+  tb_clear :: IO Int
+
+foreign import ccall unsafe "tb_height"
+  tb_height :: IO Int
+
+foreign import ccall unsafe "tb_hide_cursor"
+  tb_hide_cursor :: IO Int
+
+foreign import ccall unsafe "tb_init"
+  tb_init :: IO Int
+
+foreign import ccall unsafe "tb_present"
+  tb_present :: IO Int
+
+foreign import ccall unsafe "tb_set_cell"
+  tb_set_cell :: Int -> Int -> Word32 -> Word32 -> Word32 -> IO Int
+
+foreign import ccall unsafe "tb_set_clear_attrs"
+  tb_set_clear_attrs :: Word32 -> Word32 -> IO Int
+
+foreign import ccall unsafe "tb_set_cursor"
+  tb_set_cursor :: Int -> Int -> IO Int
+
+foreign import ccall unsafe "tb_set_input_mode"
+  tb_set_input_mode :: Int -> IO Int
+
+foreign import ccall unsafe "tb_set_output_mode"
+  tb_set_output_mode :: Int -> IO Int
+
+foreign import ccall unsafe "tb_shutdown"
+  tb_shutdown :: IO Int
+
+foreign import ccall unsafe "tb_width"
+  tb_width :: IO Int

@@ -57,3 +57,5 @@ library
       -Wno-missing-kind-signatures
   hs-source-dirs: src
   include-dirs: cbits/termbox2/include
+  other-modules:
+    Termbox2.Internal

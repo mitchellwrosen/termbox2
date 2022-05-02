@@ -1,9 +1,12 @@
 module Termbox2
-  ( clear,
+  ( InputMode (..),
+    clear,
+    getInputMode,
     hideCursor,
     height,
     init,
     present,
+    setInputMode,
     shutdown,
     width,
   )
@@ -22,6 +25,14 @@ clear :: IO ()
 clear = do
   result <- C.clear
   when (result /= C._OK) (exception "tb_clear" result)
+
+getInputMode :: IO InputMode
+getInputMode = do
+  result <- C.set_input_mode C._INPUT_CURRENT
+  if
+      | result == C._INPUT_ESC -> pure InputModeEsc
+      | result == C._INPUT_ALT -> pure InputModeAlt
+      | otherwise -> exception "tb_set_input_mode" result
 
 height :: IO ()
 height = do
@@ -55,7 +66,21 @@ present = do
 
 -- set_cursor
 
--- set_input_mode
+-- TODO mouse mode
+data InputMode
+  = InputModeEsc
+  | InputModeAlt
+
+setInputMode :: InputMode -> IO ()
+setInputMode mode = do
+  result <- C.set_input_mode cmode
+  when (result /= C._OK) (exception "tb_set_input_mode" result)
+  where
+    cmode :: CInt
+    cmode =
+      case mode of
+        InputModeEsc -> C._INPUT_ESC
+        InputModeAlt -> C._INPUT_ALT
 
 -- set_output_mode
 

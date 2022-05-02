@@ -2,7 +2,10 @@
 
 module Termbox2 where
 
+import Data.Int (Int32)
 import Data.Word (Word16, Word32, Word8)
+import Foreign.C.Types
+import Foreign.Ptr (Ptr)
 
 --
 
@@ -197,13 +200,13 @@ _MOD_CTRL = 2
 _MOD_SHIFT = 4
 _MOD_MOTION = 8
 
-_INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: Int
+_INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: CInt
 _INPUT_CURRENT = 0
 _INPUT_ESC = 1
 _INPUT_ALT = 2
 _INPUT_MOUSE = 4
 
-_OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: Int
+_OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: CInt
 _OUTPUT_CURRENT = 0
 _OUTPUT_NORMAL = 1
 _OUTPUT_256 = 2
@@ -234,7 +237,7 @@ _OK,
   _ERR_RESIZE_READ,
   _ERR_RESIZE_SSCANF,
   _ERR_CAP_COLLISION ::
-    Int
+    CInt
 _OK = 0
 _ERR = -1
 _ERR_NEED_MORE = -2
@@ -259,46 +262,66 @@ _ERR_RESIZE_READ = -20
 _ERR_RESIZE_SSCANF = -21
 _ERR_CAP_COLLISION = -22
 
-_ERR_SELECT, _ERR_RESIZE_SELECT :: Int
+_ERR_SELECT, _ERR_RESIZE_SELECT :: CInt
 _ERR_SELECT = _ERR_POLL
 _ERR_RESIZE_SELECT = _ERR_RESIZE_POLL
 
-_FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: Int
+_FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: CInt
 _FUNC_EXTRACT_PRE = 0
 _FUNC_EXTRACT_POST = 1
 
+data Event = Event
+  { type_ :: Word8,
+    mod :: Word8,
+    key :: Word16,
+    ch :: Word32,
+    w :: Int32,
+    h :: Int32,
+    x :: Int32,
+    y :: Int32
+  }
+
 foreign import ccall unsafe "tb_clear"
-  clear :: IO Int
+  clear :: IO CInt
 
 foreign import ccall unsafe "tb_height"
-  height :: IO Int
+  height :: IO CInt
 
 foreign import ccall unsafe "tb_hide_cursor"
-  hide_cursor :: IO Int
+  hide_cursor :: IO CInt
 
 foreign import ccall unsafe "tb_init"
-  init :: IO Int
+  init :: IO CInt
+
+foreign import ccall safe "tb_peek_event"
+  peek_event :: Ptr Event -> CInt -> IO CInt
+
+foreign import ccall safe "tb_poll_event"
+  poll_event :: Ptr Event -> IO CInt
 
 foreign import ccall unsafe "tb_present"
-  present :: IO Int
+  present :: IO CInt
+
+foreign import ccall unsafe "tb_print"
+  print :: CInt -> CInt -> Word32 -> Word32 -> Ptr CChar -> IO CInt
 
 foreign import ccall unsafe "tb_set_cell"
-  set_cell :: Int -> Int -> Word32 -> Word32 -> Word32 -> IO Int
+  set_cell :: CInt -> CInt -> Word32 -> Word32 -> Word32 -> IO CInt
 
 foreign import ccall unsafe "tb_set_clear_attrs"
-  set_clear_attrs :: Word32 -> Word32 -> IO Int
+  set_clear_attrs :: Word32 -> Word32 -> IO CInt
 
 foreign import ccall unsafe "tb_set_cursor"
-  set_cursor :: Int -> Int -> IO Int
+  set_cursor :: CInt -> CInt -> IO CInt
 
 foreign import ccall unsafe "tb_set_input_mode"
-  set_input_mode :: Int -> IO Int
+  set_input_mode :: CInt -> IO CInt
 
 foreign import ccall unsafe "tb_set_output_mode"
-  set_output_mode :: Int -> IO Int
+  set_output_mode :: CInt -> IO CInt
 
 foreign import ccall unsafe "tb_shutdown"
-  shutdown :: IO Int
+  shutdown :: IO CInt
 
 foreign import ccall unsafe "tb_width"
-  width :: IO Int
+  width :: IO CInt

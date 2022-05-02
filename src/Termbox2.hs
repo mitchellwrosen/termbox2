@@ -1,5 +1,7 @@
 module Termbox2
-  ( InputMode (..),
+  ( Event (..),
+    InputMode (..),
+    Mouse (..),
     MouseMode (..),
     OutputMode (..),
     clear,
@@ -8,6 +10,7 @@ module Termbox2
     hideCursor,
     height,
     init,
+    pollEvent,
     present,
     setInputMode,
     setOutputMode,
@@ -20,16 +23,32 @@ import Control.Exception (Exception, throwIO)
 import Control.Monad (when)
 import Data.Bits ((.|.))
 import qualified Data.ByteString.Unsafe as ByteString
+import Data.Int (Int32)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as Text
+import Data.Word (Word16, Word8)
 import Foreign.C.Types (CInt)
+import Foreign.Marshal.Alloc (alloca)
+import qualified Foreign.Storable as Storable
 import qualified Termbox2.Internal as C
-import Prelude hiding (init)
+import Prelude hiding (init, mod)
 
--- TODO mouse mode
+data Event
+  = EventKey Word8 Word16 Word16 -- FIXME better types
+  | EventResize Width Height
+  | EventMouse Mouse Column Row
+
 data InputMode
   = InputModeEsc MouseMode
   | InputModeAlt MouseMode
+
+data Mouse
+  = MouseLeft
+  | MouseRight
+  | MouseMiddle
+  | MouseRelease
+  | MouseWheelUp
+  | MouseWheelDown
 
 data MouseMode
   = MouseModeNo
@@ -41,6 +60,14 @@ data OutputMode
   | OutputMode216
   | OutputModeGrayscale
   | OutputModeTrueColor
+
+type Column = Int32
+
+type Height = Int32
+
+type Row = Int32
+
+type Width = Int32
 
 clear :: IO ()
 clear = do
@@ -85,7 +112,29 @@ init = do
 
 -- peek_event
 
--- poll_event
+pollEvent :: IO Event
+pollEvent =
+  fmap parseEvent do
+    alloca \eventPointer -> do
+      result <- C.poll_event eventPointer
+      when (result /= C._OK) (exception "tb_poll_event" result)
+      Storable.peek eventPointer
+  where
+    parseEvent :: C.Event -> Event
+    parseEvent = \case
+      C.EventKey mod key ch -> EventKey mod key ch
+      C.EventResize w h -> EventResize w h
+      C.EventMouse key x y -> EventMouse (parseMouse key) x y
+
+    parseMouse :: Word16 -> Mouse
+    parseMouse key
+      | key == C._KEY_MOUSE_LEFT = MouseLeft
+      | key == C._KEY_MOUSE_RIGHT = MouseRight
+      | key == C._KEY_MOUSE_MIDDLE = MouseMiddle
+      | key == C._KEY_MOUSE_RELEASE = MouseRelease
+      | key == C._KEY_MOUSE_WHEEL_UP = MouseWheelUp
+      | key == C._KEY_MOUSE_WHEEL_DOWN = MouseWheelDown
+      | otherwise = error ("unknown mouse: " ++ show key)
 
 present :: IO ()
 present = do

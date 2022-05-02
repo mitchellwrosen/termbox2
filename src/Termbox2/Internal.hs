@@ -6,6 +6,8 @@ import Data.Int (Int32)
 import Data.Word (Word16, Word32, Word8)
 import Foreign.C.Types
 import Foreign.Ptr (Ptr)
+import Foreign.Storable (Storable (..))
+import Prelude hiding (mod)
 
 _KEY_CTRL_TILDE,
   _KEY_CTRL_2,
@@ -268,16 +270,60 @@ _FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: CInt
 _FUNC_EXTRACT_PRE = 0
 _FUNC_EXTRACT_POST = 1
 
-data Event = Event
-  { type_ :: Word8,
-    mod :: Word8,
-    key :: Word16,
-    ch :: Word32,
-    w :: Int32,
-    h :: Int32,
-    x :: Int32,
-    y :: Int32
-  }
+data Event
+  = -- | mod, key, ch
+    EventKey Word8 Word16 Word16
+  | -- | w, h
+    EventResize Int32 Int32
+  | -- | key, x, y
+    EventMouse Word16 Int32 Int32
+
+instance Storable Event where
+  alignment :: Event -> Int
+  alignment _ =
+    4
+
+  peek :: Ptr Event -> IO Event
+  peek eventPointer = do
+    type_ <- peekByteOff eventPointer 0
+    if
+        | type_ == _EVENT_KEY -> do
+            mod <- peekByteOff eventPointer 1
+            key <- peekByteOff eventPointer 2
+            ch <- peekByteOff eventPointer 4
+            pure (EventKey mod key ch)
+        | type_ == _EVENT_RESIZE -> do
+            w <- peekByteOff eventPointer 8
+            h <- peekByteOff eventPointer 12
+            pure (EventResize w h)
+        | type_ == _EVENT_MOUSE -> do
+            key <- peekByteOff eventPointer 2
+            x <- peekByteOff eventPointer 16
+            y <- peekByteOff eventPointer 20
+            pure (EventMouse key x y)
+        | otherwise -> error ("unknown event type: " ++ show type_)
+
+  poke :: Ptr Event -> Event -> IO ()
+  poke eventPointer = \case
+    -- Event {type_, mod, key, ch, w, h, x, y} = do
+    EventKey mod key ch -> do
+      pokeByteOff eventPointer 0 _EVENT_KEY
+      pokeByteOff eventPointer 1 mod
+      pokeByteOff eventPointer 2 key
+      pokeByteOff eventPointer 4 ch
+    EventResize w h -> do
+      pokeByteOff eventPointer 0 _EVENT_RESIZE
+      pokeByteOff eventPointer 8 w
+      pokeByteOff eventPointer 12 h
+    EventMouse key x y -> do
+      pokeByteOff eventPointer 0 _EVENT_MOUSE
+      pokeByteOff eventPointer 2 key
+      pokeByteOff eventPointer 16 x
+      pokeByteOff eventPointer 20 y
+
+  sizeOf :: Event -> Int
+  sizeOf _ =
+    24
 
 foreign import ccall unsafe "tb_clear"
   clear :: IO CInt

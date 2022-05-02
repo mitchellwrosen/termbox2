@@ -40,8 +40,11 @@ library
   c-sources:
     cbits/termbox2/src/termbox2.c
   default-extensions:
+    BlockArguments
     DeriveAnyClass
     DerivingStrategies
+    InstanceSigs
+    LambdaCase
     MultiWayIf
     NamedFieldPuns
     OverloadedStrings

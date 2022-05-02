@@ -291,6 +291,9 @@ foreign import ccall unsafe "tb_hide_cursor"
 foreign import ccall unsafe "tb_init"
   init :: IO CInt
 
+foreign import ccall unsafe "tb_last_errno"
+  last_errno :: IO CInt
+
 foreign import ccall safe "tb_peek_event"
   peek_event :: Ptr Event -> CInt -> IO CInt
 
@@ -320,6 +323,9 @@ foreign import ccall unsafe "tb_set_output_mode"
 
 foreign import ccall unsafe "tb_shutdown"
   shutdown :: IO CInt
+
+foreign import ccall unsafe "tb_strerror"
+  strerror :: CInt -> IO (Ptr CChar)
 
 foreign import ccall unsafe "tb_width"
   width :: IO CInt

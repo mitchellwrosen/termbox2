@@ -14,12 +14,22 @@ where
 
 import Control.Exception (Exception, throwIO)
 import Control.Monad (when)
+import Data.Bits ((.|.))
 import qualified Data.ByteString.Unsafe as ByteString
 import Data.Text (Text)
 import qualified Data.Text.Encoding as Text
 import Foreign.C.Types (CInt)
 import qualified Termbox2.Internal as C
 import Prelude hiding (init)
+
+-- TODO mouse mode
+data InputMode
+  = InputModeEsc MouseMode
+  | InputModeAlt MouseMode
+
+data MouseMode
+  = MouseModeNo
+  | MouseModeYes
 
 clear :: IO ()
 clear = do
@@ -30,8 +40,10 @@ getInputMode :: IO InputMode
 getInputMode = do
   result <- C.set_input_mode C._INPUT_CURRENT
   if
-      | result == C._INPUT_ESC -> pure InputModeEsc
-      | result == C._INPUT_ALT -> pure InputModeAlt
+      | result == C._INPUT_ESC -> pure (InputModeEsc MouseModeNo)
+      | result == C._INPUT_ESC .|. C._INPUT_MOUSE -> pure (InputModeEsc MouseModeYes)
+      | result == C._INPUT_ALT -> pure (InputModeAlt MouseModeNo)
+      | result == C._INPUT_ALT .|. C._INPUT_MOUSE -> pure (InputModeAlt MouseModeYes)
       | otherwise -> exception "tb_set_input_mode" result
 
 height :: IO ()
@@ -66,11 +78,6 @@ present = do
 
 -- set_cursor
 
--- TODO mouse mode
-data InputMode
-  = InputModeEsc
-  | InputModeAlt
-
 setInputMode :: InputMode -> IO ()
 setInputMode mode = do
   result <- C.set_input_mode cmode
@@ -79,8 +86,10 @@ setInputMode mode = do
     cmode :: CInt
     cmode =
       case mode of
-        InputModeEsc -> C._INPUT_ESC
-        InputModeAlt -> C._INPUT_ALT
+        InputModeEsc MouseModeNo -> C._INPUT_ESC
+        InputModeEsc MouseModeYes -> C._INPUT_ESC .|. C._INPUT_MOUSE
+        InputModeAlt MouseModeNo -> C._INPUT_ALT
+        InputModeAlt MouseModeYes -> C._INPUT_ALT .|. C._INPUT_MOUSE
 
 -- set_output_mode
 

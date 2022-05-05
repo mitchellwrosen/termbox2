@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-missing-export-lists #-}
 
-module Termbox2.Internal where
+module Termbox2.Bindings where
 
 import Data.Int (Int32)
 import Data.Word (Word16, Word32, Word8)

@@ -34,7 +34,7 @@ import qualified Termbox2.Bindings
 import Prelude hiding (init, mod)
 
 data Event
-  = EventKey Word8 Word16 Word16 -- FIXME better types
+  = EventKey Word8 Termbox2.Bindings.Key Word16 -- FIXME better types
   | EventResize Width Height
   | EventMouse Mouse Column Row
 

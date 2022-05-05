@@ -629,7 +629,7 @@ _FUNC_EXTRACT_POST = 1
 
 data Event
   = -- | mod, key, ch
-    EventKey Word8 Word16 Word16
+    EventKey Word8 Key Word16
   | -- | w, h
     EventResize Int32 Int32
   | -- | key, x, y
@@ -648,7 +648,7 @@ instance Storable Event where
             mod <- peekByteOff eventPointer 1
             key <- peekByteOff eventPointer 2
             ch <- peekByteOff eventPointer 4
-            pure (EventKey mod key ch)
+            pure (EventKey mod (Key key) ch)
         | type_ == _EVENT_RESIZE -> do
             w <- peekByteOff eventPointer 8
             h <- peekByteOff eventPointer 12
@@ -662,8 +662,7 @@ instance Storable Event where
 
   poke :: Ptr Event -> Event -> IO ()
   poke eventPointer = \case
-    -- Event {type_, mod, key, ch, w, h, x, y} = do
-    EventKey mod key ch -> do
+    EventKey mod (Key key) ch -> do
       pokeByteOff eventPointer 0 _EVENT_KEY
       pokeByteOff eventPointer 1 mod
       pokeByteOff eventPointer 2 key

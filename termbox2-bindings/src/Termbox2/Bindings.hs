@@ -1,74 +1,74 @@
 module Termbox2.Bindings
   ( Event (..),
     Key
-      ( KeyCtrlTilde,
-        KeyCtrl2,
-        KeyCtrlA,
-        KeyCtrlB,
-        KeyCtrlC,
-        KeyCtrlD,
-        KeyCtrlE,
-        KeyCtrlF,
-        KeyCtrlG,
-        KeyBackspace,
-        KeyCtrlH,
-        KeyTab,
-        KeyCtrlI,
-        KeyCtrlJ,
-        KeyCtrlK,
-        KeyCtrlL,
-        KeyEnter,
-        KeyCtrlM,
-        KeyCtrlN,
-        KeyCtrlO,
-        KeyCtrlP,
-        KeyCtrlQ,
-        KeyCtrlR,
-        KeyCtrlS,
-        KeyCtrlT,
-        KeyCtrlU,
-        KeyCtrlV,
-        KeyCtrlW,
-        KeyCtrlX,
-        KeyCtrlY,
-        KeyCtrlZ,
-        KeyEsc,
-        KeyCtrlLsqBracket,
-        KeyCtrl3,
-        KeyCtrl4,
-        KeyCtrlBackslash,
-        KeyCtrl5,
-        KeyCtrlRsqBracket,
-        KeyCtrl6,
-        KeyCtrl7,
-        KeyCtrlSlash,
-        KeyCtrlUnderscore,
-        KeySpace,
-        KeyBackspace2,
-        KeyCtrl8,
-        KeyF1,
-        KeyF2,
-        KeyF3,
-        KeyF4,
-        KeyF5,
-        KeyF6,
-        KeyF7,
-        KeyF8,
-        KeyF9,
-        KeyF10,
-        KeyF11,
-        KeyF12,
-        KeyInsert,
-        KeyDelete,
-        KeyHome,
-        KeyEnd,
-        KeyPgup,
-        KeyPgdn,
-        KeyArrowUp,
-        KeyArrowDown,
-        KeyArrowLeft,
-        KeyArrowRight,
-        KeyBackTab
+      ( CtrlTilde,
+        Ctrl2,
+        CtrlA,
+        CtrlB,
+        CtrlC,
+        CtrlD,
+        CtrlE,
+        CtrlF,
+        CtrlG,
+        Backspace,
+        CtrlH,
+        Tab,
+        CtrlI,
+        CtrlJ,
+        CtrlK,
+        CtrlL,
+        Enter,
+        CtrlM,
+        CtrlN,
+        CtrlO,
+        CtrlP,
+        CtrlQ,
+        CtrlR,
+        CtrlS,
+        CtrlT,
+        CtrlU,
+        CtrlV,
+        CtrlW,
+        CtrlX,
+        CtrlY,
+        CtrlZ,
+        Esc,
+        CtrlLsqBracket,
+        Ctrl3,
+        Ctrl4,
+        CtrlBackslash,
+        Ctrl5,
+        CtrlRsqBracket,
+        Ctrl6,
+        Ctrl7,
+        CtrlSlash,
+        CtrlUnderscore,
+        Space,
+        Backspace2,
+        Ctrl8,
+        F1,
+        F2,
+        F3,
+        F4,
+        F5,
+        F6,
+        F7,
+        F8,
+        F9,
+        F10,
+        F11,
+        F12,
+        Insert,
+        Delete,
+        Home,
+        End,
+        Pgup,
+        Pgdn,
+        ArrowUp,
+        ArrowDown,
+        ArrowLeft,
+        ArrowRight,
+        BackTab
       ),
     _KEY_MOUSE_LEFT,
     _KEY_MOUSE_RIGHT,
@@ -162,209 +162,209 @@ import Prelude hiding (init, mod, print)
 newtype Key = Key Word16
   deriving newtype (Eq, Show)
 
-pattern KeyCtrlTilde :: Key
-pattern KeyCtrlTilde <- ((== _KEY_CTRL_TILDE) -> True) where KeyCtrlTilde = _KEY_CTRL_TILDE
+pattern CtrlTilde :: Key
+pattern CtrlTilde <- ((== _KEY_CTRL_TILDE) -> True) where CtrlTilde = _KEY_CTRL_TILDE
 
-pattern KeyCtrl2 :: Key
-pattern KeyCtrl2 <- ((== _KEY_CTRL_2) -> True) where KeyCtrl2 = _KEY_CTRL_2
+pattern Ctrl2 :: Key
+pattern Ctrl2 <- ((== _KEY_CTRL_2) -> True) where Ctrl2 = _KEY_CTRL_2
 
-pattern KeyCtrlA :: Key
-pattern KeyCtrlA <- ((== _KEY_CTRL_A) -> True) where KeyCtrlA = _KEY_CTRL_A
+pattern CtrlA :: Key
+pattern CtrlA <- ((== _KEY_CTRL_A) -> True) where CtrlA = _KEY_CTRL_A
 
-pattern KeyCtrlB :: Key
-pattern KeyCtrlB <- ((== _KEY_CTRL_B) -> True) where KeyCtrlB = _KEY_CTRL_B
+pattern CtrlB :: Key
+pattern CtrlB <- ((== _KEY_CTRL_B) -> True) where CtrlB = _KEY_CTRL_B
 
-pattern KeyCtrlC :: Key
-pattern KeyCtrlC <- ((== _KEY_CTRL_C) -> True) where KeyCtrlC = _KEY_CTRL_C
+pattern CtrlC :: Key
+pattern CtrlC <- ((== _KEY_CTRL_C) -> True) where CtrlC = _KEY_CTRL_C
 
-pattern KeyCtrlD :: Key
-pattern KeyCtrlD <- ((== _KEY_CTRL_D) -> True) where KeyCtrlD = _KEY_CTRL_D
+pattern CtrlD :: Key
+pattern CtrlD <- ((== _KEY_CTRL_D) -> True) where CtrlD = _KEY_CTRL_D
 
-pattern KeyCtrlE :: Key
-pattern KeyCtrlE <- ((== _KEY_CTRL_E) -> True) where KeyCtrlE = _KEY_CTRL_E
+pattern CtrlE :: Key
+pattern CtrlE <- ((== _KEY_CTRL_E) -> True) where CtrlE = _KEY_CTRL_E
 
-pattern KeyCtrlF :: Key
-pattern KeyCtrlF <- ((== _KEY_CTRL_F) -> True) where KeyCtrlF = _KEY_CTRL_F
+pattern CtrlF :: Key
+pattern CtrlF <- ((== _KEY_CTRL_F) -> True) where CtrlF = _KEY_CTRL_F
 
-pattern KeyCtrlG :: Key
-pattern KeyCtrlG <- ((== _KEY_CTRL_G) -> True) where KeyCtrlG = _KEY_CTRL_G
+pattern CtrlG :: Key
+pattern CtrlG <- ((== _KEY_CTRL_G) -> True) where CtrlG = _KEY_CTRL_G
 
-pattern KeyBackspace :: Key
-pattern KeyBackspace <- ((== _KEY_BACKSPACE) -> True) where KeyBackspace = _KEY_BACKSPACE
+pattern Backspace :: Key
+pattern Backspace <- ((== _KEY_BACKSPACE) -> True) where Backspace = _KEY_BACKSPACE
 
-pattern KeyCtrlH :: Key
-pattern KeyCtrlH <- ((== _KEY_CTRL_H) -> True) where KeyCtrlH = _KEY_CTRL_H
+pattern CtrlH :: Key
+pattern CtrlH <- ((== _KEY_CTRL_H) -> True) where CtrlH = _KEY_CTRL_H
 
-pattern KeyTab :: Key
-pattern KeyTab <- ((== _KEY_TAB) -> True) where KeyTab = _KEY_TAB
+pattern Tab :: Key
+pattern Tab <- ((== _KEY_TAB) -> True) where Tab = _KEY_TAB
 
-pattern KeyCtrlI :: Key
-pattern KeyCtrlI <- ((== _KEY_CTRL_I) -> True) where KeyCtrlI = _KEY_CTRL_I
+pattern CtrlI :: Key
+pattern CtrlI <- ((== _KEY_CTRL_I) -> True) where CtrlI = _KEY_CTRL_I
 
-pattern KeyCtrlJ :: Key
-pattern KeyCtrlJ <- ((== _KEY_CTRL_J) -> True) where KeyCtrlJ = _KEY_CTRL_J
+pattern CtrlJ :: Key
+pattern CtrlJ <- ((== _KEY_CTRL_J) -> True) where CtrlJ = _KEY_CTRL_J
 
-pattern KeyCtrlK :: Key
-pattern KeyCtrlK <- ((== _KEY_CTRL_K) -> True) where KeyCtrlK = _KEY_CTRL_K
+pattern CtrlK :: Key
+pattern CtrlK <- ((== _KEY_CTRL_K) -> True) where CtrlK = _KEY_CTRL_K
 
-pattern KeyCtrlL :: Key
-pattern KeyCtrlL <- ((== _KEY_CTRL_L) -> True) where KeyCtrlL = _KEY_CTRL_L
+pattern CtrlL :: Key
+pattern CtrlL <- ((== _KEY_CTRL_L) -> True) where CtrlL = _KEY_CTRL_L
 
-pattern KeyEnter :: Key
-pattern KeyEnter <- ((== _KEY_ENTER) -> True) where KeyEnter = _KEY_ENTER
+pattern Enter :: Key
+pattern Enter <- ((== _KEY_ENTER) -> True) where Enter = _KEY_ENTER
 
-pattern KeyCtrlM :: Key
-pattern KeyCtrlM <- ((== _KEY_CTRL_M) -> True) where KeyCtrlM = _KEY_CTRL_M
+pattern CtrlM :: Key
+pattern CtrlM <- ((== _KEY_CTRL_M) -> True) where CtrlM = _KEY_CTRL_M
 
-pattern KeyCtrlN :: Key
-pattern KeyCtrlN <- ((== _KEY_CTRL_N) -> True) where KeyCtrlN = _KEY_CTRL_N
+pattern CtrlN :: Key
+pattern CtrlN <- ((== _KEY_CTRL_N) -> True) where CtrlN = _KEY_CTRL_N
 
-pattern KeyCtrlO :: Key
-pattern KeyCtrlO <- ((== _KEY_CTRL_O) -> True) where KeyCtrlO = _KEY_CTRL_O
+pattern CtrlO :: Key
+pattern CtrlO <- ((== _KEY_CTRL_O) -> True) where CtrlO = _KEY_CTRL_O
 
-pattern KeyCtrlP :: Key
-pattern KeyCtrlP <- ((== _KEY_CTRL_P) -> True) where KeyCtrlP = _KEY_CTRL_P
+pattern CtrlP :: Key
+pattern CtrlP <- ((== _KEY_CTRL_P) -> True) where CtrlP = _KEY_CTRL_P
 
-pattern KeyCtrlQ :: Key
-pattern KeyCtrlQ <- ((== _KEY_CTRL_Q) -> True) where KeyCtrlQ = _KEY_CTRL_Q
+pattern CtrlQ :: Key
+pattern CtrlQ <- ((== _KEY_CTRL_Q) -> True) where CtrlQ = _KEY_CTRL_Q
 
-pattern KeyCtrlR :: Key
-pattern KeyCtrlR <- ((== _KEY_CTRL_R) -> True) where KeyCtrlR = _KEY_CTRL_R
+pattern CtrlR :: Key
+pattern CtrlR <- ((== _KEY_CTRL_R) -> True) where CtrlR = _KEY_CTRL_R
 
-pattern KeyCtrlS :: Key
-pattern KeyCtrlS <- ((== _KEY_CTRL_S) -> True) where KeyCtrlS = _KEY_CTRL_S
+pattern CtrlS :: Key
+pattern CtrlS <- ((== _KEY_CTRL_S) -> True) where CtrlS = _KEY_CTRL_S
 
-pattern KeyCtrlT :: Key
-pattern KeyCtrlT <- ((== _KEY_CTRL_T) -> True) where KeyCtrlT = _KEY_CTRL_T
+pattern CtrlT :: Key
+pattern CtrlT <- ((== _KEY_CTRL_T) -> True) where CtrlT = _KEY_CTRL_T
 
-pattern KeyCtrlU :: Key
-pattern KeyCtrlU <- ((== _KEY_CTRL_U) -> True) where KeyCtrlU = _KEY_CTRL_U
+pattern CtrlU :: Key
+pattern CtrlU <- ((== _KEY_CTRL_U) -> True) where CtrlU = _KEY_CTRL_U
 
-pattern KeyCtrlV :: Key
-pattern KeyCtrlV <- ((== _KEY_CTRL_V) -> True) where KeyCtrlV = _KEY_CTRL_V
+pattern CtrlV :: Key
+pattern CtrlV <- ((== _KEY_CTRL_V) -> True) where CtrlV = _KEY_CTRL_V
 
-pattern KeyCtrlW :: Key
-pattern KeyCtrlW <- ((== _KEY_CTRL_W) -> True) where KeyCtrlW = _KEY_CTRL_W
+pattern CtrlW :: Key
+pattern CtrlW <- ((== _KEY_CTRL_W) -> True) where CtrlW = _KEY_CTRL_W
 
-pattern KeyCtrlX :: Key
-pattern KeyCtrlX <- ((== _KEY_CTRL_X) -> True) where KeyCtrlX = _KEY_CTRL_X
+pattern CtrlX :: Key
+pattern CtrlX <- ((== _KEY_CTRL_X) -> True) where CtrlX = _KEY_CTRL_X
 
-pattern KeyCtrlY :: Key
-pattern KeyCtrlY <- ((== _KEY_CTRL_Y) -> True) where KeyCtrlY = _KEY_CTRL_Y
+pattern CtrlY :: Key
+pattern CtrlY <- ((== _KEY_CTRL_Y) -> True) where CtrlY = _KEY_CTRL_Y
 
-pattern KeyCtrlZ :: Key
-pattern KeyCtrlZ <- ((== _KEY_CTRL_Z) -> True) where KeyCtrlZ = _KEY_CTRL_Z
+pattern CtrlZ :: Key
+pattern CtrlZ <- ((== _KEY_CTRL_Z) -> True) where CtrlZ = _KEY_CTRL_Z
 
-pattern KeyEsc :: Key
-pattern KeyEsc <- ((== _KEY_ESC) -> True) where KeyEsc = _KEY_ESC
+pattern Esc :: Key
+pattern Esc <- ((== _KEY_ESC) -> True) where Esc = _KEY_ESC
 
-pattern KeyCtrlLsqBracket :: Key
-pattern KeyCtrlLsqBracket <- ((== _KEY_CTRL_LSQ_BRACKET) -> True) where KeyCtrlLsqBracket = _KEY_CTRL_LSQ_BRACKET
+pattern CtrlLsqBracket :: Key
+pattern CtrlLsqBracket <- ((== _KEY_CTRL_LSQ_BRACKET) -> True) where CtrlLsqBracket = _KEY_CTRL_LSQ_BRACKET
 
-pattern KeyCtrl3 :: Key
-pattern KeyCtrl3 <- ((== _KEY_CTRL_3) -> True) where KeyCtrl3 = _KEY_CTRL_3
+pattern Ctrl3 :: Key
+pattern Ctrl3 <- ((== _KEY_CTRL_3) -> True) where Ctrl3 = _KEY_CTRL_3
 
-pattern KeyCtrl4 :: Key
-pattern KeyCtrl4 <- ((== _KEY_CTRL_4) -> True) where KeyCtrl4 = _KEY_CTRL_4
+pattern Ctrl4 :: Key
+pattern Ctrl4 <- ((== _KEY_CTRL_4) -> True) where Ctrl4 = _KEY_CTRL_4
 
-pattern KeyCtrlBackslash :: Key
-pattern KeyCtrlBackslash <- ((== _KEY_CTRL_BACKSLASH) -> True) where KeyCtrlBackslash = _KEY_CTRL_BACKSLASH
+pattern CtrlBackslash :: Key
+pattern CtrlBackslash <- ((== _KEY_CTRL_BACKSLASH) -> True) where CtrlBackslash = _KEY_CTRL_BACKSLASH
 
-pattern KeyCtrl5 :: Key
-pattern KeyCtrl5 <- ((== _KEY_CTRL_5) -> True) where KeyCtrl5 = _KEY_CTRL_5
+pattern Ctrl5 :: Key
+pattern Ctrl5 <- ((== _KEY_CTRL_5) -> True) where Ctrl5 = _KEY_CTRL_5
 
-pattern KeyCtrlRsqBracket :: Key
-pattern KeyCtrlRsqBracket <- ((== _KEY_CTRL_RSQ_BRACKET) -> True) where KeyCtrlRsqBracket = _KEY_CTRL_RSQ_BRACKET
+pattern CtrlRsqBracket :: Key
+pattern CtrlRsqBracket <- ((== _KEY_CTRL_RSQ_BRACKET) -> True) where CtrlRsqBracket = _KEY_CTRL_RSQ_BRACKET
 
-pattern KeyCtrl6 :: Key
-pattern KeyCtrl6 <- ((== _KEY_CTRL_6) -> True) where KeyCtrl6 = _KEY_CTRL_6
+pattern Ctrl6 :: Key
+pattern Ctrl6 <- ((== _KEY_CTRL_6) -> True) where Ctrl6 = _KEY_CTRL_6
 
-pattern KeyCtrl7 :: Key
-pattern KeyCtrl7 <- ((== _KEY_CTRL_7) -> True) where KeyCtrl7 = _KEY_CTRL_7
+pattern Ctrl7 :: Key
+pattern Ctrl7 <- ((== _KEY_CTRL_7) -> True) where Ctrl7 = _KEY_CTRL_7
 
-pattern KeyCtrlSlash :: Key
-pattern KeyCtrlSlash <- ((== _KEY_CTRL_SLASH) -> True) where KeyCtrlSlash = _KEY_CTRL_SLASH
+pattern CtrlSlash :: Key
+pattern CtrlSlash <- ((== _KEY_CTRL_SLASH) -> True) where CtrlSlash = _KEY_CTRL_SLASH
 
-pattern KeyCtrlUnderscore :: Key
-pattern KeyCtrlUnderscore <- ((== _KEY_CTRL_UNDERSCORE) -> True) where KeyCtrlUnderscore = _KEY_CTRL_UNDERSCORE
+pattern CtrlUnderscore :: Key
+pattern CtrlUnderscore <- ((== _KEY_CTRL_UNDERSCORE) -> True) where CtrlUnderscore = _KEY_CTRL_UNDERSCORE
 
-pattern KeySpace :: Key
-pattern KeySpace <- ((== _KEY_SPACE) -> True) where KeySpace = _KEY_SPACE
+pattern Space :: Key
+pattern Space <- ((== _KEY_SPACE) -> True) where Space = _KEY_SPACE
 
-pattern KeyBackspace2 :: Key
-pattern KeyBackspace2 <- ((== _KEY_BACKSPACE2) -> True) where KeyBackspace2 = _KEY_BACKSPACE2
+pattern Backspace2 :: Key
+pattern Backspace2 <- ((== _KEY_BACKSPACE2) -> True) where Backspace2 = _KEY_BACKSPACE2
 
-pattern KeyCtrl8 :: Key
-pattern KeyCtrl8 <- ((== _KEY_CTRL_8) -> True) where KeyCtrl8 = _KEY_CTRL_8
+pattern Ctrl8 :: Key
+pattern Ctrl8 <- ((== _KEY_CTRL_8) -> True) where Ctrl8 = _KEY_CTRL_8
 
-pattern KeyF1 :: Key
-pattern KeyF1 <- ((== _KEY_F1) -> True) where KeyF1 = _KEY_F1
+pattern F1 :: Key
+pattern F1 <- ((== _KEY_F1) -> True) where F1 = _KEY_F1
 
-pattern KeyF2 :: Key
-pattern KeyF2 <- ((== _KEY_F2) -> True) where KeyF2 = _KEY_F2
+pattern F2 :: Key
+pattern F2 <- ((== _KEY_F2) -> True) where F2 = _KEY_F2
 
-pattern KeyF3 :: Key
-pattern KeyF3 <- ((== _KEY_F3) -> True) where KeyF3 = _KEY_F3
+pattern F3 :: Key
+pattern F3 <- ((== _KEY_F3) -> True) where F3 = _KEY_F3
 
-pattern KeyF4 :: Key
-pattern KeyF4 <- ((== _KEY_F4) -> True) where KeyF4 = _KEY_F4
+pattern F4 :: Key
+pattern F4 <- ((== _KEY_F4) -> True) where F4 = _KEY_F4
 
-pattern KeyF5 :: Key
-pattern KeyF5 <- ((== _KEY_F5) -> True) where KeyF5 = _KEY_F5
+pattern F5 :: Key
+pattern F5 <- ((== _KEY_F5) -> True) where F5 = _KEY_F5
 
-pattern KeyF6 :: Key
-pattern KeyF6 <- ((== _KEY_F6) -> True) where KeyF6 = _KEY_F6
+pattern F6 :: Key
+pattern F6 <- ((== _KEY_F6) -> True) where F6 = _KEY_F6
 
-pattern KeyF7 :: Key
-pattern KeyF7 <- ((== _KEY_F7) -> True) where KeyF7 = _KEY_F7
+pattern F7 :: Key
+pattern F7 <- ((== _KEY_F7) -> True) where F7 = _KEY_F7
 
-pattern KeyF8 :: Key
-pattern KeyF8 <- ((== _KEY_F8) -> True) where KeyF8 = _KEY_F8
+pattern F8 :: Key
+pattern F8 <- ((== _KEY_F8) -> True) where F8 = _KEY_F8
 
-pattern KeyF9 :: Key
-pattern KeyF9 <- ((== _KEY_F9) -> True) where KeyF9 = _KEY_F9
+pattern F9 :: Key
+pattern F9 <- ((== _KEY_F9) -> True) where F9 = _KEY_F9
 
-pattern KeyF10 :: Key
-pattern KeyF10 <- ((== _KEY_F10) -> True) where KeyF10 = _KEY_F10
+pattern F10 :: Key
+pattern F10 <- ((== _KEY_F10) -> True) where F10 = _KEY_F10
 
-pattern KeyF11 :: Key
-pattern KeyF11 <- ((== _KEY_F11) -> True) where KeyF11 = _KEY_F11
+pattern F11 :: Key
+pattern F11 <- ((== _KEY_F11) -> True) where F11 = _KEY_F11
 
-pattern KeyF12 :: Key
-pattern KeyF12 <- ((== _KEY_F12) -> True) where KeyF12 = _KEY_F12
+pattern F12 :: Key
+pattern F12 <- ((== _KEY_F12) -> True) where F12 = _KEY_F12
 
-pattern KeyInsert :: Key
-pattern KeyInsert <- ((== _KEY_INSERT) -> True) where KeyInsert = _KEY_INSERT
+pattern Insert :: Key
+pattern Insert <- ((== _KEY_INSERT) -> True) where Insert = _KEY_INSERT
 
-pattern KeyDelete :: Key
-pattern KeyDelete <- ((== _KEY_DELETE) -> True) where KeyDelete = _KEY_DELETE
+pattern Delete :: Key
+pattern Delete <- ((== _KEY_DELETE) -> True) where Delete = _KEY_DELETE
 
-pattern KeyHome :: Key
-pattern KeyHome <- ((== _KEY_HOME) -> True) where KeyHome = _KEY_HOME
+pattern Home :: Key
+pattern Home <- ((== _KEY_HOME) -> True) where Home = _KEY_HOME
 
-pattern KeyEnd :: Key
-pattern KeyEnd <- ((== _KEY_END) -> True) where KeyEnd = _KEY_END
+pattern End :: Key
+pattern End <- ((== _KEY_END) -> True) where End = _KEY_END
 
-pattern KeyPgup :: Key
-pattern KeyPgup <- ((== _KEY_PGUP) -> True) where KeyPgup = _KEY_PGUP
+pattern Pgup :: Key
+pattern Pgup <- ((== _KEY_PGUP) -> True) where Pgup = _KEY_PGUP
 
-pattern KeyPgdn :: Key
-pattern KeyPgdn <- ((== _KEY_PGDN) -> True) where KeyPgdn = _KEY_PGDN
+pattern Pgdn :: Key
+pattern Pgdn <- ((== _KEY_PGDN) -> True) where Pgdn = _KEY_PGDN
 
-pattern KeyArrowUp :: Key
-pattern KeyArrowUp <- ((== _KEY_ARROW_UP) -> True) where KeyArrowUp = _KEY_ARROW_UP
+pattern ArrowUp :: Key
+pattern ArrowUp <- ((== _KEY_ARROW_UP) -> True) where ArrowUp = _KEY_ARROW_UP
 
-pattern KeyArrowDown :: Key
-pattern KeyArrowDown <- ((== _KEY_ARROW_DOWN) -> True) where KeyArrowDown = _KEY_ARROW_DOWN
+pattern ArrowDown :: Key
+pattern ArrowDown <- ((== _KEY_ARROW_DOWN) -> True) where ArrowDown = _KEY_ARROW_DOWN
 
-pattern KeyArrowLeft :: Key
-pattern KeyArrowLeft <- ((== _KEY_ARROW_LEFT) -> True) where KeyArrowLeft = _KEY_ARROW_LEFT
+pattern ArrowLeft :: Key
+pattern ArrowLeft <- ((== _KEY_ARROW_LEFT) -> True) where ArrowLeft = _KEY_ARROW_LEFT
 
-pattern KeyArrowRight :: Key
-pattern KeyArrowRight <- ((== _KEY_ARROW_RIGHT) -> True) where KeyArrowRight = _KEY_ARROW_RIGHT
+pattern ArrowRight :: Key
+pattern ArrowRight <- ((== _KEY_ARROW_RIGHT) -> True) where ArrowRight = _KEY_ARROW_RIGHT
 
-pattern KeyBackTab :: Key
-pattern KeyBackTab <- ((== _KEY_BACK_TAB) -> True) where KeyBackTab = _KEY_BACK_TAB
+pattern BackTab :: Key
+pattern BackTab <- ((== _KEY_BACK_TAB) -> True) where BackTab = _KEY_BACK_TAB
 
 _KEY_CTRL_TILDE,
   _KEY_CTRL_2,

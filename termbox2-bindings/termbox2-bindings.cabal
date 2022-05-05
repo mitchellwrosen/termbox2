@@ -4,11 +4,13 @@ name: termbox2-bindings
 version: 0.1.0
 category: User Interfaces
 description:
-  This package provides bindings to @termbox2@ (commit @4ac33796ccb5276436fc269ade9ffbe36e205c51@),
-  a simple C library for writing text-based user interfaces: <https://github.com/termbox/termbox2>
+  This package provides bindings to @termbox2@, a simple C library for writing text-based user interfaces:
+  <https://github.com/termbox/termbox2>
   .
   The full source of @termbox2@ is bundled with 32-bit color support enabled; you do not need to install any system
   packages to use this library.
+  .
+  @termbox2@ commit: @4ac33796ccb5276436fc269ade9ffbe36e205c51@
 synopsis: termbox2 bindings
 author: Mitchell Rosen
 maintainer: Mitchell Rosen <mitchellwrosen@gmail.com>

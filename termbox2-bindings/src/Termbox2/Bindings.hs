@@ -1,7 +1,8 @@
 module Termbox2.Bindings
   ( Event (..),
     Key
-      ( ArrowDown,
+      ( Key,
+        ArrowDown,
         ArrowLeft,
         ArrowRight,
         ArrowUp,
@@ -70,7 +71,7 @@ module Termbox2.Bindings
         Space,
         Tab
       ),
-    Mouse (MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
+    Mouse (Mouse, MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
     _DEFAULT,
     _BLACK,
     _RED,
@@ -88,16 +89,8 @@ module Termbox2.Bindings
     _MOD_CTRL,
     _MOD_SHIFT,
     _MOD_MOTION,
-    _INPUT_CURRENT,
-    _INPUT_ESC,
-    _INPUT_ALT,
-    _INPUT_MOUSE,
-    _OUTPUT_CURRENT,
-    _OUTPUT_NORMAL,
-    _OUTPUT_256,
-    _OUTPUT_216,
-    _OUTPUT_GRAYSCALE,
-    _OUTPUT_TRUECOLOR,
+    InputMode (InputMode, InputCurrent, InputEsc, InputAlt, InputMouse),
+    OutputMode (OutputMode, OutputCurrent, OutputNormal, Output256, Output216, OutputGrayscale, OutputTruecolor),
     _OK,
     _ERR,
     _ERR_NEED_MORE,
@@ -144,6 +137,7 @@ module Termbox2.Bindings
   )
 where
 
+import Data.Bits (Bits)
 import Data.Int (Int32)
 import Data.Word (Word16, Word32, Word8)
 import Foreign.C.Types
@@ -207,6 +201,24 @@ instance Storable Event where
   sizeOf :: Event -> Int
   sizeOf _ =
     24
+
+------------------------------------------------------------------------------------------------------------------------
+-- Input mode
+
+newtype InputMode = InputMode CInt
+  deriving newtype (Bits, Eq)
+
+pattern InputCurrent :: InputMode
+pattern InputCurrent <- ((== _INPUT_CURRENT) -> True) where InputCurrent = _INPUT_CURRENT
+
+pattern InputEsc :: InputMode
+pattern InputEsc <- ((== _INPUT_ESC) -> True) where InputEsc = _INPUT_ESC
+
+pattern InputAlt :: InputMode
+pattern InputAlt <- ((== _INPUT_ALT) -> True) where InputAlt = _INPUT_ALT
+
+pattern InputMouse :: InputMode
+pattern InputMouse <- ((== _INPUT_MOUSE) -> True) where InputMouse = _INPUT_MOUSE
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Key
@@ -596,6 +608,30 @@ _KEY_MOUSE_RELEASE = Mouse (0xffff - 26)
 _KEY_MOUSE_WHEEL_UP = Mouse (0xffff - 27)
 _KEY_MOUSE_WHEEL_DOWN = Mouse (0xffff - 28)
 
+------------------------------------------------------------------------------------------------------------------------
+-- Output mode
+
+newtype OutputMode = OutputMode CInt
+  deriving newtype (Bits, Eq)
+
+pattern OutputCurrent :: OutputMode
+pattern OutputCurrent <- ((== _OUTPUT_CURRENT) -> True) where OutputCurrent = _OUTPUT_CURRENT
+
+pattern OutputNormal :: OutputMode
+pattern OutputNormal <- ((== _OUTPUT_NORMAL) -> True) where OutputNormal = _OUTPUT_NORMAL
+
+pattern Output256 :: OutputMode
+pattern Output256 <- ((== _OUTPUT_256) -> True) where Output256 = _OUTPUT_256
+
+pattern Output216 :: OutputMode
+pattern Output216 <- ((== _OUTPUT_216) -> True) where Output216 = _OUTPUT_216
+
+pattern OutputGrayscale :: OutputMode
+pattern OutputGrayscale <- ((== _OUTPUT_GRAYSCALE) -> True) where OutputGrayscale = _OUTPUT_GRAYSCALE
+
+pattern OutputTruecolor :: OutputMode
+pattern OutputTruecolor <- ((== _OUTPUT_TRUECOLOR) -> True) where OutputTruecolor = _OUTPUT_TRUECOLOR
+
 _DEFAULT,
   _BLACK,
   _RED,
@@ -635,19 +671,19 @@ _MOD_CTRL = 2
 _MOD_SHIFT = 4
 _MOD_MOTION = 8
 
-_INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: CInt
-_INPUT_CURRENT = 0
-_INPUT_ESC = 1
-_INPUT_ALT = 2
-_INPUT_MOUSE = 4
+_INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: InputMode
+_INPUT_CURRENT = InputMode 0
+_INPUT_ESC = InputMode 1
+_INPUT_ALT = InputMode 2
+_INPUT_MOUSE = InputMode 4
 
-_OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: CInt
-_OUTPUT_CURRENT = 0
-_OUTPUT_NORMAL = 1
-_OUTPUT_256 = 2
-_OUTPUT_216 = 3
-_OUTPUT_GRAYSCALE = 4
-_OUTPUT_TRUECOLOR = 5
+_OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: OutputMode
+_OUTPUT_CURRENT = OutputMode 0
+_OUTPUT_NORMAL = OutputMode 1
+_OUTPUT_256 = OutputMode 2
+_OUTPUT_216 = OutputMode 3
+_OUTPUT_GRAYSCALE = OutputMode 4
+_OUTPUT_TRUECOLOR = OutputMode 5
 
 _OK,
   _ERR,
@@ -745,10 +781,10 @@ foreign import ccall unsafe "tb_set_cursor"
   set_cursor :: CInt -> CInt -> IO CInt
 
 foreign import ccall unsafe "tb_set_input_mode"
-  set_input_mode :: CInt -> IO CInt
+  set_input_mode :: InputMode -> IO CInt
 
 foreign import ccall unsafe "tb_set_output_mode"
-  set_output_mode :: CInt -> IO CInt
+  set_output_mode :: OutputMode -> IO CInt
 
 foreign import ccall unsafe "tb_shutdown"
   shutdown :: IO CInt

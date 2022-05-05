@@ -23,6 +23,7 @@ import Control.Exception (Exception, throwIO)
 import Control.Monad (when)
 import Data.Bits ((.|.))
 import qualified Data.ByteString.Unsafe as ByteString
+import Data.Coerce (coerce)
 import Data.Int (Int32)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as Text
@@ -51,7 +52,7 @@ data OutputMode
   | OutputMode256
   | OutputMode216
   | OutputModeGrayscale
-  | OutputModeTrueColor
+  | OutputModeTruecolor
 
 type Column = Int32
 
@@ -68,23 +69,23 @@ clear = do
 
 getInputMode :: IO InputMode
 getInputMode = do
-  result <- Termbox2.Bindings.set_input_mode Termbox2.Bindings._INPUT_CURRENT
+  result <- Termbox2.Bindings.set_input_mode Termbox2.Bindings.InputCurrent
   if
-      | result == Termbox2.Bindings._INPUT_ESC -> pure (InputModeEsc MouseModeNo)
-      | result == Termbox2.Bindings._INPUT_ESC .|. Termbox2.Bindings._INPUT_MOUSE -> pure (InputModeEsc MouseModeYes)
-      | result == Termbox2.Bindings._INPUT_ALT -> pure (InputModeAlt MouseModeNo)
-      | result == Termbox2.Bindings._INPUT_ALT .|. Termbox2.Bindings._INPUT_MOUSE -> pure (InputModeAlt MouseModeYes)
+      | coerce result == Termbox2.Bindings.InputEsc -> pure (InputModeEsc MouseModeNo)
+      | coerce result == Termbox2.Bindings.InputEsc .|. Termbox2.Bindings.InputMouse -> pure (InputModeEsc MouseModeYes)
+      | coerce result == Termbox2.Bindings.InputAlt -> pure (InputModeAlt MouseModeNo)
+      | coerce result == Termbox2.Bindings.InputAlt .|. Termbox2.Bindings.InputMouse -> pure (InputModeAlt MouseModeYes)
       | otherwise -> exception "tb_set_input_mode" result
 
 getOutputMode :: IO OutputMode
 getOutputMode = do
-  result <- Termbox2.Bindings.set_output_mode Termbox2.Bindings._OUTPUT_CURRENT
+  result <- Termbox2.Bindings.set_output_mode Termbox2.Bindings.OutputCurrent
   if
-      | result == Termbox2.Bindings._OUTPUT_NORMAL -> pure OutputModeNormal
-      | result == Termbox2.Bindings._OUTPUT_256 -> pure OutputMode256
-      | result == Termbox2.Bindings._OUTPUT_216 -> pure OutputMode216
-      | result == Termbox2.Bindings._OUTPUT_GRAYSCALE -> pure OutputModeGrayscale
-      | result == Termbox2.Bindings._OUTPUT_TRUECOLOR -> pure OutputModeTrueColor
+      | coerce result == Termbox2.Bindings.OutputNormal -> pure OutputModeNormal
+      | coerce result == Termbox2.Bindings.Output256 -> pure OutputMode256
+      | coerce result == Termbox2.Bindings.Output216 -> pure OutputMode216
+      | coerce result == Termbox2.Bindings.OutputGrayscale -> pure OutputModeGrayscale
+      | coerce result == Termbox2.Bindings.OutputTruecolor -> pure OutputModeTruecolor
       | otherwise -> exception "tb_set_output_mode" result
 
 height :: IO ()
@@ -136,27 +137,27 @@ setInputMode mode = do
   result <- Termbox2.Bindings.set_input_mode cmode
   when (result /= Termbox2.Bindings._OK) (exception "tb_set_input_mode" result)
   where
-    cmode :: CInt
+    cmode :: Termbox2.Bindings.InputMode
     cmode =
       case mode of
-        InputModeEsc MouseModeNo -> Termbox2.Bindings._INPUT_ESC
-        InputModeEsc MouseModeYes -> Termbox2.Bindings._INPUT_ESC .|. Termbox2.Bindings._INPUT_MOUSE
-        InputModeAlt MouseModeNo -> Termbox2.Bindings._INPUT_ALT
-        InputModeAlt MouseModeYes -> Termbox2.Bindings._INPUT_ALT .|. Termbox2.Bindings._INPUT_MOUSE
+        InputModeEsc MouseModeNo -> Termbox2.Bindings.InputEsc
+        InputModeEsc MouseModeYes -> Termbox2.Bindings.InputEsc .|. Termbox2.Bindings.InputMouse
+        InputModeAlt MouseModeNo -> Termbox2.Bindings.InputAlt
+        InputModeAlt MouseModeYes -> Termbox2.Bindings.InputAlt .|. Termbox2.Bindings.InputMouse
 
 setOutputMode :: OutputMode -> IO ()
 setOutputMode mode = do
   result <- Termbox2.Bindings.set_output_mode cmode
   when (result /= Termbox2.Bindings._OK) (exception "tb_set_output_mode" result)
   where
-    cmode :: CInt
+    cmode :: Termbox2.Bindings.OutputMode
     cmode =
       case mode of
-        OutputModeNormal -> Termbox2.Bindings._OUTPUT_NORMAL
-        OutputMode256 -> Termbox2.Bindings._OUTPUT_256
-        OutputMode216 -> Termbox2.Bindings._OUTPUT_216
-        OutputModeGrayscale -> Termbox2.Bindings._OUTPUT_GRAYSCALE
-        OutputModeTrueColor -> Termbox2.Bindings._OUTPUT_TRUECOLOR
+        OutputModeNormal -> Termbox2.Bindings.OutputNormal
+        OutputMode256 -> Termbox2.Bindings.Output256
+        OutputMode216 -> Termbox2.Bindings.Output216
+        OutputModeGrayscale -> Termbox2.Bindings.OutputGrayscale
+        OutputModeTruecolor -> Termbox2.Bindings.OutputTruecolor
 
 shutdown :: IO ()
 shutdown = do

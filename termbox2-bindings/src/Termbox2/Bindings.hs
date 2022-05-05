@@ -70,12 +70,7 @@ module Termbox2.Bindings
         ArrowRight,
         BackTab
       ),
-    _KEY_MOUSE_LEFT,
-    _KEY_MOUSE_RIGHT,
-    _KEY_MOUSE_MIDDLE,
-    _KEY_MOUSE_RELEASE,
-    _KEY_MOUSE_WHEEL_UP,
-    _KEY_MOUSE_WHEEL_DOWN,
+    Mouse (MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
     _DEFAULT,
     _BLACK,
     _RED,
@@ -158,6 +153,66 @@ import Foreign.C.Types
 import Foreign.Ptr (Ptr)
 import Foreign.Storable (Storable (..))
 import Prelude hiding (init, mod, print)
+
+------------------------------------------------------------------------------------------------------------------------
+-- Event
+
+data Event
+  = -- | mod, key, ch
+    EventKey Word8 Key Word16
+  | -- | w, h
+    EventResize Int32 Int32
+  | -- | key, x, y
+    EventMouse Mouse Int32 Int32
+
+instance Storable Event where
+  alignment :: Event -> Int
+  alignment _ =
+    4
+
+  peek :: Ptr Event -> IO Event
+  peek eventPointer = do
+    type_ <- peekByteOff eventPointer 0
+    if
+        | type_ == _EVENT_KEY -> do
+            mod <- peekByteOff eventPointer 1
+            key <- peekByteOff eventPointer 2
+            ch <- peekByteOff eventPointer 4
+            pure (EventKey mod (Key key) ch)
+        | type_ == _EVENT_RESIZE -> do
+            w <- peekByteOff eventPointer 8
+            h <- peekByteOff eventPointer 12
+            pure (EventResize w h)
+        | type_ == _EVENT_MOUSE -> do
+            key <- peekByteOff eventPointer 2
+            x <- peekByteOff eventPointer 16
+            y <- peekByteOff eventPointer 20
+            pure (EventMouse (Mouse key) x y)
+        | otherwise -> error ("unknown event type: " ++ show type_)
+
+  poke :: Ptr Event -> Event -> IO ()
+  poke eventPointer = \case
+    EventKey mod (Key key) ch -> do
+      pokeByteOff eventPointer 0 _EVENT_KEY
+      pokeByteOff eventPointer 1 mod
+      pokeByteOff eventPointer 2 key
+      pokeByteOff eventPointer 4 ch
+    EventResize w h -> do
+      pokeByteOff eventPointer 0 _EVENT_RESIZE
+      pokeByteOff eventPointer 8 w
+      pokeByteOff eventPointer 12 h
+    EventMouse (Mouse key) x y -> do
+      pokeByteOff eventPointer 0 _EVENT_MOUSE
+      pokeByteOff eventPointer 2 key
+      pokeByteOff eventPointer 16 x
+      pokeByteOff eventPointer 20 y
+
+  sizeOf :: Event -> Int
+  sizeOf _ =
+    24
+
+------------------------------------------------------------------------------------------------------------------------
+-- Key
 
 newtype Key = Key Word16
   deriving newtype (Eq, Show)
@@ -504,19 +559,45 @@ _KEY_ARROW_LEFT = Key (0xffff - 20)
 _KEY_ARROW_RIGHT = Key (0xffff - 21)
 _KEY_BACK_TAB = Key (0xffff - 22)
 
+------------------------------------------------------------------------------------------------------------------------
+-- Mouse
+
+newtype Mouse = Mouse Word16
+  deriving newtype (Eq)
+
+pattern MouseLeft :: Mouse
+pattern MouseLeft <- ((== _KEY_MOUSE_LEFT) -> True) where MouseLeft = _KEY_MOUSE_LEFT
+
+pattern MouseRight :: Mouse
+pattern MouseRight <- ((== _KEY_MOUSE_RIGHT) -> True) where MouseRight = _KEY_MOUSE_RIGHT
+
+pattern MouseMiddle :: Mouse
+pattern MouseMiddle <- ((== _KEY_MOUSE_MIDDLE) -> True) where MouseMiddle = _KEY_MOUSE_MIDDLE
+
+pattern MouseRelease :: Mouse
+pattern MouseRelease <- ((== _KEY_MOUSE_RELEASE) -> True) where MouseRelease = _KEY_MOUSE_RELEASE
+
+pattern MouseWheelUp :: Mouse
+pattern MouseWheelUp <- ((== _KEY_MOUSE_WHEEL_UP) -> True) where MouseWheelUp = _KEY_MOUSE_WHEEL_UP
+
+pattern MouseWheelDown :: Mouse
+pattern MouseWheelDown <- ((== _KEY_MOUSE_WHEEL_DOWN) -> True) where MouseWheelDown = _KEY_MOUSE_WHEEL_DOWN
+
+{-# COMPLETE MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown #-}
+
 _KEY_MOUSE_LEFT,
   _KEY_MOUSE_RIGHT,
   _KEY_MOUSE_MIDDLE,
   _KEY_MOUSE_RELEASE,
   _KEY_MOUSE_WHEEL_UP,
   _KEY_MOUSE_WHEEL_DOWN ::
-    Word16
-_KEY_MOUSE_LEFT = 0xffff - 23
-_KEY_MOUSE_RIGHT = 0xffff - 24
-_KEY_MOUSE_MIDDLE = 0xffff - 25
-_KEY_MOUSE_RELEASE = 0xffff - 26
-_KEY_MOUSE_WHEEL_UP = 0xffff - 27
-_KEY_MOUSE_WHEEL_DOWN = 0xffff - 28
+    Mouse
+_KEY_MOUSE_LEFT = Mouse (0xffff - 23)
+_KEY_MOUSE_RIGHT = Mouse (0xffff - 24)
+_KEY_MOUSE_MIDDLE = Mouse (0xffff - 25)
+_KEY_MOUSE_RELEASE = Mouse (0xffff - 26)
+_KEY_MOUSE_WHEEL_UP = Mouse (0xffff - 27)
+_KEY_MOUSE_WHEEL_DOWN = Mouse (0xffff - 28)
 
 _DEFAULT,
   _BLACK,
@@ -627,59 +708,8 @@ _FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: CInt
 _FUNC_EXTRACT_PRE = 0
 _FUNC_EXTRACT_POST = 1
 
-data Event
-  = -- | mod, key, ch
-    EventKey Word8 Key Word16
-  | -- | w, h
-    EventResize Int32 Int32
-  | -- | key, x, y
-    EventMouse Word16 Int32 Int32
-
-instance Storable Event where
-  alignment :: Event -> Int
-  alignment _ =
-    4
-
-  peek :: Ptr Event -> IO Event
-  peek eventPointer = do
-    type_ <- peekByteOff eventPointer 0
-    if
-        | type_ == _EVENT_KEY -> do
-            mod <- peekByteOff eventPointer 1
-            key <- peekByteOff eventPointer 2
-            ch <- peekByteOff eventPointer 4
-            pure (EventKey mod (Key key) ch)
-        | type_ == _EVENT_RESIZE -> do
-            w <- peekByteOff eventPointer 8
-            h <- peekByteOff eventPointer 12
-            pure (EventResize w h)
-        | type_ == _EVENT_MOUSE -> do
-            key <- peekByteOff eventPointer 2
-            x <- peekByteOff eventPointer 16
-            y <- peekByteOff eventPointer 20
-            pure (EventMouse key x y)
-        | otherwise -> error ("unknown event type: " ++ show type_)
-
-  poke :: Ptr Event -> Event -> IO ()
-  poke eventPointer = \case
-    EventKey mod (Key key) ch -> do
-      pokeByteOff eventPointer 0 _EVENT_KEY
-      pokeByteOff eventPointer 1 mod
-      pokeByteOff eventPointer 2 key
-      pokeByteOff eventPointer 4 ch
-    EventResize w h -> do
-      pokeByteOff eventPointer 0 _EVENT_RESIZE
-      pokeByteOff eventPointer 8 w
-      pokeByteOff eventPointer 12 h
-    EventMouse key x y -> do
-      pokeByteOff eventPointer 0 _EVENT_MOUSE
-      pokeByteOff eventPointer 2 key
-      pokeByteOff eventPointer 16 x
-      pokeByteOff eventPointer 20 y
-
-  sizeOf :: Event -> Int
-  sizeOf _ =
-    24
+------------------------------------------------------------------------------------------------------------------------
+-- Bindings
 
 foreign import ccall unsafe "tb_clear"
   clear :: IO CInt

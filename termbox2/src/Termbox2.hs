@@ -1,7 +1,7 @@
 module Termbox2
   ( Event (..),
     InputMode (..),
-    Mouse (..),
+    Termbox2.Bindings.Mouse (..),
     MouseMode (..),
     OutputMode (..),
     clear,
@@ -36,19 +36,11 @@ import Prelude hiding (init, mod)
 data Event
   = EventKey Word8 Termbox2.Bindings.Key Word16 -- FIXME better types
   | EventResize Width Height
-  | EventMouse Mouse Column Row
+  | EventMouse Termbox2.Bindings.Mouse Column Row
 
 data InputMode
   = InputModeEsc MouseMode
   | InputModeAlt MouseMode
-
-data Mouse
-  = MouseLeft
-  | MouseRight
-  | MouseMiddle
-  | MouseRelease
-  | MouseWheelUp
-  | MouseWheelDown
 
 data MouseMode
   = MouseModeNo
@@ -124,17 +116,7 @@ pollEvent =
     parseEvent = \case
       Termbox2.Bindings.EventKey mod key ch -> EventKey mod key ch
       Termbox2.Bindings.EventResize w h -> EventResize w h
-      Termbox2.Bindings.EventMouse key x y -> EventMouse (parseMouse key) x y
-
-    parseMouse :: Word16 -> Mouse
-    parseMouse key
-      | key == Termbox2.Bindings._KEY_MOUSE_LEFT = MouseLeft
-      | key == Termbox2.Bindings._KEY_MOUSE_RIGHT = MouseRight
-      | key == Termbox2.Bindings._KEY_MOUSE_MIDDLE = MouseMiddle
-      | key == Termbox2.Bindings._KEY_MOUSE_RELEASE = MouseRelease
-      | key == Termbox2.Bindings._KEY_MOUSE_WHEEL_UP = MouseWheelUp
-      | key == Termbox2.Bindings._KEY_MOUSE_WHEEL_DOWN = MouseWheelDown
-      | otherwise = error ("unknown mouse: " ++ show key)
+      Termbox2.Bindings.EventMouse key x y -> EventMouse key x y
 
 present :: IO ()
 present = do

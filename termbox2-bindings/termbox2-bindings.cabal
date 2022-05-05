@@ -36,9 +36,13 @@ library
   c-sources:
     cbits/termbox2/src/termbox2.c
   default-extensions:
+    DerivingStrategies
+    GeneralizedNewtypeDeriving
     InstanceSigs
     LambdaCase
     MultiWayIf
+    PatternSynonyms
+    ViewPatterns
   default-language: Haskell2010
   exposed-modules:
     Termbox2.Bindings

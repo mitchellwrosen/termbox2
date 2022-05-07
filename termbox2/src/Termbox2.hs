@@ -27,7 +27,7 @@ import Data.Coerce (coerce)
 import Data.Int (Int32)
 import Data.Text (Text)
 import qualified Data.Text.Encoding as Text
-import Data.Word (Word16, Word8)
+import Data.Word (Word16)
 import Foreign.C.Types (CInt)
 import Foreign.Marshal.Alloc (alloca)
 import qualified Foreign.Storable as Storable
@@ -35,7 +35,7 @@ import qualified Termbox2.Bindings
 import Prelude hiding (init, mod)
 
 data Event
-  = EventKey Word8 Termbox2.Bindings.Key Word16 -- FIXME better types
+  = EventKey Termbox2.Bindings.Mod Termbox2.Bindings.Key Word16 -- FIXME better types
   | EventResize Width Height
   | EventMouse Termbox2.Bindings.Mouse Column Row
 

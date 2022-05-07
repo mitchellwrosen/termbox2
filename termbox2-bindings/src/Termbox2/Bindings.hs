@@ -71,6 +71,7 @@ module Termbox2.Bindings
         Space,
         Tab
       ),
+    Mod (ModAlt, ModCtrl, ModShift),
     Mouse (Mouse, MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
     _DEFAULT,
     _BLACK,
@@ -150,7 +151,7 @@ import Prelude hiding (init, mod, print)
 
 data Event
   = -- | mod, key, ch
-    EventKey Word8 Key Word16
+    EventKey Mod Key Word16
   | -- | w, h
     EventResize Int32 Int32
   | -- | key, x, y
@@ -169,7 +170,7 @@ instance Storable Event where
             mod <- peekByteOff eventPointer 1
             key <- peekByteOff eventPointer 2
             ch <- peekByteOff eventPointer 4
-            pure (EventKey mod (Key key) ch)
+            pure (EventKey (Mod mod) (Key key) ch)
         | type_ == _EVENT_RESIZE -> do
             w <- peekByteOff eventPointer 8
             h <- peekByteOff eventPointer 12
@@ -183,7 +184,7 @@ instance Storable Event where
 
   poke :: Ptr Event -> Event -> IO ()
   poke eventPointer = \case
-    EventKey mod (Key key) ch -> do
+    EventKey (Mod mod) (Key key) ch -> do
       pokeByteOff eventPointer 0 _EVENT_KEY
       pokeByteOff eventPointer 1 mod
       pokeByteOff eventPointer 2 key
@@ -202,6 +203,11 @@ instance Storable Event where
   sizeOf _ =
     24
 
+_EVENT_KEY, _EVENT_RESIZE, _EVENT_MOUSE :: Word8
+_EVENT_KEY = 1
+_EVENT_RESIZE = 2
+_EVENT_MOUSE = 3
+
 ------------------------------------------------------------------------------------------------------------------------
 -- Input mode
 
@@ -219,6 +225,12 @@ pattern InputAlt <- ((== _INPUT_ALT) -> True) where InputAlt = _INPUT_ALT
 
 pattern InputMouse :: InputMode
 pattern InputMouse <- ((== _INPUT_MOUSE) -> True) where InputMouse = _INPUT_MOUSE
+
+_INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: InputMode
+_INPUT_CURRENT = InputMode 0
+_INPUT_ESC = InputMode 1
+_INPUT_ALT = InputMode 2
+_INPUT_MOUSE = InputMode 4
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Key
@@ -569,6 +581,27 @@ _KEY_ARROW_RIGHT = Key (0xffff - 21)
 _KEY_BACK_TAB = Key (0xffff - 22)
 
 ------------------------------------------------------------------------------------------------------------------------
+-- Mod
+
+newtype Mod = Mod Word8
+  deriving newtype (Eq)
+
+pattern ModAlt :: Mod
+pattern ModAlt <- ((== _MOD_ALT) -> True) where ModAlt = _MOD_ALT
+
+pattern ModCtrl :: Mod
+pattern ModCtrl <- ((== _MOD_CTRL) -> True) where ModCtrl = _MOD_CTRL
+
+pattern ModShift :: Mod
+pattern ModShift <- ((== _MOD_SHIFT) -> True) where ModShift = _MOD_SHIFT
+
+_MOD_ALT, _MOD_CTRL, _MOD_SHIFT, _MOD_MOTION :: Mod
+_MOD_ALT = Mod 1
+_MOD_CTRL = Mod 2
+_MOD_SHIFT = Mod 4
+_MOD_MOTION = Mod 8
+
+------------------------------------------------------------------------------------------------------------------------
 -- Mouse
 
 newtype Mouse = Mouse Word16
@@ -632,6 +665,14 @@ pattern OutputGrayscale <- ((== _OUTPUT_GRAYSCALE) -> True) where OutputGrayscal
 pattern OutputTruecolor :: OutputMode
 pattern OutputTruecolor <- ((== _OUTPUT_TRUECOLOR) -> True) where OutputTruecolor = _OUTPUT_TRUECOLOR
 
+_OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: OutputMode
+_OUTPUT_CURRENT = OutputMode 0
+_OUTPUT_NORMAL = OutputMode 1
+_OUTPUT_256 = OutputMode 2
+_OUTPUT_216 = OutputMode 3
+_OUTPUT_GRAYSCALE = OutputMode 4
+_OUTPUT_TRUECOLOR = OutputMode 5
+
 _DEFAULT,
   _BLACK,
   _RED,
@@ -659,31 +700,6 @@ _BOLD = 0x0100
 _UNDERLINE = 0x0200
 _REVERSE = 0x0400
 _ITALIC = 0x0800
-
-_EVENT_KEY, _EVENT_RESIZE, _EVENT_MOUSE :: Word8
-_EVENT_KEY = 1
-_EVENT_RESIZE = 2
-_EVENT_MOUSE = 3
-
-_MOD_ALT, _MOD_CTRL, _MOD_SHIFT, _MOD_MOTION :: Word8
-_MOD_ALT = 1
-_MOD_CTRL = 2
-_MOD_SHIFT = 4
-_MOD_MOTION = 8
-
-_INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: InputMode
-_INPUT_CURRENT = InputMode 0
-_INPUT_ESC = InputMode 1
-_INPUT_ALT = InputMode 2
-_INPUT_MOUSE = InputMode 4
-
-_OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: OutputMode
-_OUTPUT_CURRENT = OutputMode 0
-_OUTPUT_NORMAL = OutputMode 1
-_OUTPUT_256 = OutputMode 2
-_OUTPUT_216 = OutputMode 3
-_OUTPUT_GRAYSCALE = OutputMode 4
-_OUTPUT_TRUECOLOR = OutputMode 5
 
 _OK,
   _ERR,

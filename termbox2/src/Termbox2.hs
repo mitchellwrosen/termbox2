@@ -9,6 +9,14 @@ module Termbox2
     shift,
     MouseMode (..),
     OutputMode (..),
+    --
+    Column,
+    Row,
+    Height,
+    h,
+    Width,
+    w,
+    --
     clear,
     getInputMode,
     getOutputMode,
@@ -140,11 +148,29 @@ data OutputMode
 
 type Column = Int32
 
-type Height = Int32
+newtype Height = Height Int32
+  deriving stock (Eq, Ord)
+
+instance Show Height where
+  showsPrec d (Height n) =
+    showParen (d > 10) (showString ("h " ++ show n))
+
+h :: Int32 -> Height
+h =
+  Height
 
 type Row = Int32
 
-type Width = Int32
+newtype Width = Width Int32
+  deriving stock (Eq, Ord)
+
+instance Show Width where
+  showsPrec d (Width n) =
+    showParen (d > 10) (showString ("w " ++ show n))
+
+w :: Int32 -> Width
+w =
+  Width
 
 clear :: IO ()
 clear = do
@@ -201,7 +227,7 @@ pollEvent =
     parseEvent = \case
       Termbox2.Bindings.EventChar mod ch -> EventChar (Mod mod) (Char.chr (word32_to_int ch))
       Termbox2.Bindings.EventKey mod key -> EventKey (Mod mod) key
-      Termbox2.Bindings.EventResize w h -> EventResize w h
+      Termbox2.Bindings.EventResize nw nh -> EventResize (Width nw) (Height nh)
       Termbox2.Bindings.EventMouse key x y -> EventMouse key x y
 
 present :: IO ()

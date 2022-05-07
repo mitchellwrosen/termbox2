@@ -73,25 +73,13 @@ module Termbox2.Bindings
       ),
     Mod (Mod, ModAlt, ModCtrl, ModShift),
     Mouse (Mouse, MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
-    _DEFAULT,
-    _BLACK,
-    _RED,
-    _GREEN,
-    _YELLOW,
-    _BLUE,
-    _MAGENTA,
-    _CYAN,
-    _WHITE,
-    _BOLD,
-    _UNDERLINE,
-    _REVERSE,
-    _ITALIC,
     _MOD_ALT,
     _MOD_CTRL,
     _MOD_SHIFT,
     _MOD_MOTION,
     InputMode (InputMode, InputCurrent, InputEsc, InputAlt, InputMouse),
     OutputMode (OutputMode, OutputCurrent, OutputNormal, Output256, Output216, OutputGrayscale, OutputTruecolor),
+    Style (Style, Default, Black, Red, Green, Yellow, Blue, Magenta, Cyan, White, Bold, Underline, Reverse, Italic),
     _OK,
     _ERR,
     _ERR_NEED_MORE,
@@ -139,6 +127,7 @@ module Termbox2.Bindings
 where
 
 import Data.Bits (Bits)
+import qualified Data.Char as Char
 import Data.Int (Int32)
 import Data.Word (Word16, Word32, Word8)
 import Foreign.C.Types
@@ -150,7 +139,7 @@ import Prelude hiding (init, mod, print)
 -- Event
 
 data Event
-  = EventChar Mod Word32
+  = EventChar Mod Char
   | EventKey Mod Key
   | -- | w, h
     EventResize Int32 Int32
@@ -173,7 +162,7 @@ instance Storable Event where
             if key == 0
               then do
                 ch <- peekByteOff eventPointer 4
-                pure (EventChar (Mod mod) ch)
+                pure (EventChar (Mod mod) (Char.chr (fromIntegral @Word32 @Int ch)))
               else pure (EventKey (Mod mod) (Key key))
         | type_ == _EVENT_RESIZE -> do
             w <- peekByteOff eventPointer 8
@@ -685,6 +674,51 @@ _OUTPUT_216 = OutputMode 3
 _OUTPUT_GRAYSCALE = OutputMode 4
 _OUTPUT_TRUECOLOR = OutputMode 5
 
+------------------------------------------------------------------------------------------------------------------------
+-- Style
+
+newtype Style = Style Word32
+  deriving stock (Eq, Show)
+
+pattern Default :: Style
+pattern Default <- ((== _DEFAULT) -> True) where Default = _DEFAULT
+
+pattern Black :: Style
+pattern Black <- ((== _BLACK) -> True) where Black = _BLACK
+
+pattern Red :: Style
+pattern Red <- ((== _RED) -> True) where Red = _RED
+
+pattern Green :: Style
+pattern Green <- ((== _GREEN) -> True) where Green = _GREEN
+
+pattern Yellow :: Style
+pattern Yellow <- ((== _YELLOW) -> True) where Yellow = _YELLOW
+
+pattern Blue :: Style
+pattern Blue <- ((== _BLUE) -> True) where Blue = _BLUE
+
+pattern Magenta :: Style
+pattern Magenta <- ((== _MAGENTA) -> True) where Magenta = _MAGENTA
+
+pattern Cyan :: Style
+pattern Cyan <- ((== _CYAN) -> True) where Cyan = _CYAN
+
+pattern White :: Style
+pattern White <- ((== _WHITE) -> True) where White = _WHITE
+
+pattern Bold :: Style
+pattern Bold <- ((== _BOLD) -> True) where Bold = _BOLD
+
+pattern Underline :: Style
+pattern Underline <- ((== _UNDERLINE) -> True) where Underline = _UNDERLINE
+
+pattern Reverse :: Style
+pattern Reverse <- ((== _REVERSE) -> True) where Reverse = _REVERSE
+
+pattern Italic :: Style
+pattern Italic <- ((== _ITALIC) -> True) where Italic = _ITALIC
+
 _DEFAULT,
   _BLACK,
   _RED,
@@ -698,20 +732,20 @@ _DEFAULT,
   _UNDERLINE,
   _REVERSE,
   _ITALIC ::
-    Word32
-_DEFAULT = 0x0000
-_BLACK = 0x0001
-_RED = 0x0002
-_GREEN = 0x0003
-_YELLOW = 0x0004
-_BLUE = 0x0005
-_MAGENTA = 0x0006
-_CYAN = 0x0007
-_WHITE = 0x0008
-_BOLD = 0x0100
-_UNDERLINE = 0x0200
-_REVERSE = 0x0400
-_ITALIC = 0x0800
+    Style
+_DEFAULT = Style 0x0000
+_BLACK = Style 0x0001
+_RED = Style 0x0002
+_GREEN = Style 0x0003
+_YELLOW = Style 0x0004
+_BLUE = Style 0x0005
+_MAGENTA = Style 0x0006
+_CYAN = Style 0x0007
+_WHITE = Style 0x0008
+_BOLD = Style 0x0100
+_UNDERLINE = Style 0x0200
+_REVERSE = Style 0x0400
+_ITALIC = Style 0x0800
 
 _OK,
   _ERR,

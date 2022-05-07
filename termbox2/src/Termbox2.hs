@@ -38,7 +38,6 @@ import Control.Monad (guard, when)
 import Data.Bits ((.&.), (.|.))
 import qualified Data.ByteString as ByteString (useAsCString)
 import qualified Data.ByteString.Unsafe as ByteString
-import qualified Data.Char as Char
 import Data.Coerce (coerce)
 import Data.Functor (($>))
 import Data.Int (Int32)
@@ -225,7 +224,7 @@ pollEvent =
   where
     parseEvent :: Termbox2.Bindings.Event -> Event
     parseEvent = \case
-      Termbox2.Bindings.EventChar mod ch -> EventChar (Mod mod) (Char.chr (word32_to_int ch))
+      Termbox2.Bindings.EventChar mod ch -> EventChar (Mod mod) ch
       Termbox2.Bindings.EventKey mod key -> EventKey (Mod mod) key
       Termbox2.Bindings.EventResize nw nh -> EventResize (Width nw) (Height nh)
       Termbox2.Bindings.EventMouse key x y -> EventMouse key x y
@@ -305,8 +304,4 @@ exception function code = do
 
 int32_to_cint :: Int32 -> CInt
 int32_to_cint =
-  fromIntegral
-
-word32_to_int :: Word32 -> Int
-word32_to_int =
   fromIntegral

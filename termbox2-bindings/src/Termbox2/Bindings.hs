@@ -71,7 +71,7 @@ module Termbox2.Bindings
         Space,
         Tab
       ),
-    Mod (ModAlt, ModCtrl, ModShift),
+    Mod (Mod, ModAlt, ModCtrl, ModShift),
     Mouse (Mouse, MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
     _DEFAULT,
     _BLACK,
@@ -150,12 +150,13 @@ import Prelude hiding (init, mod, print)
 -- Event
 
 data Event
-  = -- | mod, key, ch
-    EventKey Mod Key Word16
+  = EventChar Mod Word32
+  | EventKey Mod Key
   | -- | w, h
     EventResize Int32 Int32
   | -- | key, x, y
     EventMouse Mouse Int32 Int32
+  deriving stock (Show)
 
 instance Storable Event where
   alignment :: Event -> Int
@@ -169,8 +170,11 @@ instance Storable Event where
         | type_ == _EVENT_KEY -> do
             mod <- peekByteOff eventPointer 1
             key <- peekByteOff eventPointer 2
-            ch <- peekByteOff eventPointer 4
-            pure (EventKey (Mod mod) (Key key) ch)
+            if key == 0
+              then do
+                ch <- peekByteOff eventPointer 4
+                pure (EventChar (Mod mod) ch)
+              else pure (EventKey (Mod mod) (Key key))
         | type_ == _EVENT_RESIZE -> do
             w <- peekByteOff eventPointer 8
             h <- peekByteOff eventPointer 12
@@ -184,11 +188,16 @@ instance Storable Event where
 
   poke :: Ptr Event -> Event -> IO ()
   poke eventPointer = \case
-    EventKey (Mod mod) (Key key) ch -> do
+    EventChar (Mod mod) ch -> do
+      pokeByteOff eventPointer 0 _EVENT_KEY
+      pokeByteOff eventPointer 1 mod
+      pokeByteOff eventPointer 2 (0 :: Word16)
+      pokeByteOff eventPointer 4 ch
+    EventKey (Mod mod) (Key key) -> do
       pokeByteOff eventPointer 0 _EVENT_KEY
       pokeByteOff eventPointer 1 mod
       pokeByteOff eventPointer 2 key
-      pokeByteOff eventPointer 4 ch
+      pokeByteOff eventPointer 4 (0 :: Word32)
     EventResize w h -> do
       pokeByteOff eventPointer 0 _EVENT_RESIZE
       pokeByteOff eventPointer 8 w
@@ -212,7 +221,8 @@ _EVENT_MOUSE = 3
 -- Input mode
 
 newtype InputMode = InputMode CInt
-  deriving newtype (Bits, Eq)
+  deriving stock (Eq, Show)
+  deriving newtype (Bits)
 
 pattern InputCurrent :: InputMode
 pattern InputCurrent <- ((== _INPUT_CURRENT) -> True) where InputCurrent = _INPUT_CURRENT
@@ -236,7 +246,7 @@ _INPUT_MOUSE = InputMode 4
 -- Key
 
 newtype Key = Key Word16
-  deriving newtype (Eq, Show)
+  deriving stock (Eq, Show)
 
 pattern CtrlTilde :: Key
 pattern CtrlTilde <- ((== _KEY_CTRL_TILDE) -> True) where CtrlTilde = _KEY_CTRL_TILDE
@@ -584,7 +594,8 @@ _KEY_BACK_TAB = Key (0xffff - 22)
 -- Mod
 
 newtype Mod = Mod Word8
-  deriving newtype (Eq)
+  deriving stock (Eq, Show)
+  deriving newtype (Bits)
 
 pattern ModAlt :: Mod
 pattern ModAlt <- ((== _MOD_ALT) -> True) where ModAlt = _MOD_ALT
@@ -605,7 +616,7 @@ _MOD_MOTION = Mod 8
 -- Mouse
 
 newtype Mouse = Mouse Word16
-  deriving newtype (Eq)
+  deriving stock (Eq, Show)
 
 pattern MouseLeft :: Mouse
 pattern MouseLeft <- ((== _KEY_MOUSE_LEFT) -> True) where MouseLeft = _KEY_MOUSE_LEFT
@@ -645,7 +656,8 @@ _KEY_MOUSE_WHEEL_DOWN = Mouse (0xffff - 28)
 -- Output mode
 
 newtype OutputMode = OutputMode CInt
-  deriving newtype (Bits, Eq)
+  deriving stock (Eq, Show)
+  deriving newtype (Bits)
 
 pattern OutputCurrent :: OutputMode
 pattern OutputCurrent <- ((== _OUTPUT_CURRENT) -> True) where OutputCurrent = _OUTPUT_CURRENT

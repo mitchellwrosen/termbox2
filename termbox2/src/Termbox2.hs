@@ -7,6 +7,9 @@ module Termbox2
     alt,
     ctrl,
     shift,
+    altd,
+    ctrld,
+    shiftd,
     MouseMode (..),
     OutputMode (..),
     --
@@ -80,6 +83,8 @@ data InputMode
   = InputModeEsc MouseMode
   | InputModeAlt MouseMode
 
+-- note: mod Alt is not possible in Esc input mode. hmm...
+-- open question: is key Esc possible in Alt input mode?
 newtype Mod
   = Mod Termbox2.Bindings.Mod
   deriving stock (Eq)
@@ -112,27 +117,27 @@ instance Show Mod where
 
 alt :: Mod
 alt =
-  Mod Termbox2.Bindings.ModAlt
+  Mod Termbox2.Bindings.Alt
 
 ctrl :: Mod
 ctrl =
-  Mod Termbox2.Bindings.ModCtrl
+  Mod Termbox2.Bindings.Ctrl
 
 shift :: Mod
 shift =
-  Mod Termbox2.Bindings.ModShift
+  Mod Termbox2.Bindings.Shift
 
 altd :: Mod -> Bool
 altd (Mod x) =
-  x .&. Termbox2.Bindings.ModAlt /= Termbox2.Bindings.Mod 0
+  x .&. Termbox2.Bindings.Alt /= Termbox2.Bindings.Mod 0
 
 ctrld :: Mod -> Bool
 ctrld (Mod x) =
-  x .&. Termbox2.Bindings.ModCtrl /= Termbox2.Bindings.Mod 0
+  x .&. Termbox2.Bindings.Ctrl /= Termbox2.Bindings.Mod 0
 
 shiftd :: Mod -> Bool
 shiftd (Mod x) =
-  x .&. Termbox2.Bindings.ModShift /= Termbox2.Bindings.Mod 0
+  x .&. Termbox2.Bindings.Shift /= Termbox2.Bindings.Mod 0
 
 data MouseMode
   = MouseModeNo

@@ -71,7 +71,7 @@ module Termbox2.Bindings
         Space,
         Tab
       ),
-    Mod (Mod, ModAlt, ModCtrl, ModShift),
+    Mod (Mod, Alt, Ctrl, Shift, Motion),
     Mouse (Mouse, MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
     _MOD_ALT,
     _MOD_CTRL,
@@ -587,14 +587,17 @@ newtype Mod = Mod Word8
   deriving stock (Eq, Show)
   deriving newtype (Bits)
 
-pattern ModAlt :: Mod
-pattern ModAlt <- ((== _MOD_ALT) -> True) where ModAlt = _MOD_ALT
+pattern Alt :: Mod
+pattern Alt <- ((== _MOD_ALT) -> True) where Alt = _MOD_ALT
 
-pattern ModCtrl :: Mod
-pattern ModCtrl <- ((== _MOD_CTRL) -> True) where ModCtrl = _MOD_CTRL
+pattern Ctrl :: Mod
+pattern Ctrl <- ((== _MOD_CTRL) -> True) where Ctrl = _MOD_CTRL
 
-pattern ModShift :: Mod
-pattern ModShift <- ((== _MOD_SHIFT) -> True) where ModShift = _MOD_SHIFT
+pattern Shift :: Mod
+pattern Shift <- ((== _MOD_SHIFT) -> True) where Shift = _MOD_SHIFT
+
+pattern Motion :: Mod
+pattern Motion <- ((== _MOD_MOTION) -> True) where Motion = _MOD_MOTION
 
 _MOD_ALT, _MOD_CTRL, _MOD_SHIFT, _MOD_MOTION :: Mod
 _MOD_ALT = Mod 1

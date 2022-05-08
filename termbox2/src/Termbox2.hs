@@ -1,5 +1,6 @@
 module Termbox2
   ( debug,
+    run,
     Event (..),
     InputMode (..),
     Key
@@ -89,28 +90,20 @@ module Termbox2
     shiftd,
     MouseMode (..),
     OutputMode (..),
+    Scene,
+    Size (..),
     --
     Column,
     Row,
-    Height,
-    h,
-    Width,
-    w,
     --
-    clear,
     getInputMode,
     getOutputMode,
     hideCursor,
-    height,
-    init,
     pollEvent,
-    present,
     print,
     print2,
     setInputMode,
     setOutputMode,
-    shutdown,
-    width,
   )
 where
 
@@ -135,7 +128,7 @@ import Prelude hiding (init, mod, print)
 
 debug :: IO ()
 debug =
-  bracket_ init shutdown do
+  run \_size draw -> do
     setInputMode (InputModeEsc MouseModeYes)
     setOutputMode OutputMode256
     let loop = do
@@ -143,18 +136,53 @@ debug =
           if event == EventKey mempty Esc
             then pure ()
             else do
-              clear
-              c <- print2 10 10 0 0 "ン"
-              print 10 11 0 0 ("^ width = " <> Text.pack (show c))
-              print 5 5 0 0 (Text.pack (show event))
-              present
+              draw do
+                c <- print2 10 10 0 0 "ン"
+                print 10 11 0 0 ("^ width = " <> Text.pack (show c))
+                print 5 5 0 0 (Text.pack (show event))
               loop
     loop
 
+run :: (Size -> (Scene -> IO ()) -> IO a) -> IO a
+run action =
+  bracket_ init shutdown do
+    size <- getSize
+    action size \scene -> do
+      clear
+      scene
+      present
+  where
+    init :: IO ()
+    init = do
+      result <- Bindings.init
+      when (result /= Bindings.Ok && result /= Bindings.ErrInitAlready) (exception "tb_init" result)
+
+    shutdown :: IO ()
+    shutdown =
+      binding_ "tb_shutdown" Bindings.shutdown
+
+    getSize :: IO Size
+    getSize = do
+      height <- binding "tb_height" Bindings.height
+      width <- binding "tb_width" Bindings.width
+      pure
+        Size
+          { height = cint_to_int32 height,
+            width = cint_to_int32 width
+          }
+
+    clear :: IO ()
+    clear =
+      binding_ "tb_clear" Bindings.clear
+
+    present :: IO ()
+    present =
+      binding_ "tb_present" Bindings.present
+
 data Event
   = EventChar Mod Char
-  | EventKey Mod Key -- FIXME better types
-  | EventResize Width Height
+  | EventKey Mod Key
+  | EventResize Size
   | EventMouse Mouse Column Row
   deriving stock (Eq, Show)
 
@@ -533,34 +561,15 @@ data OutputMode
 
 type Column = Int32
 
-newtype Height = Height Int32
-  deriving stock (Eq, Ord)
-
-instance Show Height where
-  showsPrec d (Height n) =
-    showParen (d > 10) (showString ("h " ++ show n))
-
-h :: Int32 -> Height
-h =
-  Height
-
 type Row = Int32
 
-newtype Width = Width Int32
-  deriving stock (Eq, Ord)
+type Scene = IO ()
 
-instance Show Width where
-  showsPrec d (Width n) =
-    showParen (d > 10) (showString ("w " ++ show n))
-
-w :: Int32 -> Width
-w =
-  Width
-
-clear :: IO ()
-clear = do
-  result <- Bindings.clear
-  when (result /= Bindings.Ok) (exception "tb_clear" result)
+data Size = Size
+  { height :: Int32,
+    width :: Int32
+  }
+  deriving stock (Eq, Show)
 
 getInputMode :: IO InputMode
 getInputMode = do
@@ -583,21 +592,9 @@ getOutputMode = do
       | result == Bindings.OutputTruecolor -> pure OutputModeTruecolor
       | otherwise -> exception "tb_set_output_mode" result
 
-height :: IO CInt
-height = do
-  result <- Bindings.height
-  when (result == Bindings.ErrNotInit) (exception "tb_height" result)
-  pure result
-
 hideCursor :: IO ()
-hideCursor = do
-  result <- Bindings.hide_cursor
-  when (result /= Bindings.Ok) (exception "tb_hide_cursor" result)
-
-init :: IO ()
-init = do
-  result <- Bindings.init
-  when (result /= Bindings.Ok && result /= Bindings.ErrInitAlready) (exception "tb_init" result)
+hideCursor =
+  binding_ "tb_hide_cursor" Bindings.hide_cursor
 
 -- peek_event
 
@@ -605,37 +602,29 @@ pollEvent :: IO Event
 pollEvent =
   fmap parseEvent do
     alloca \eventPointer -> do
-      result <- Bindings.poll_event eventPointer
-      when (result /= Bindings.Ok) (exception "tb_poll_event" result)
+      binding_ "tb_poll_event" (Bindings.poll_event eventPointer)
       Storable.peek eventPointer
   where
     parseEvent :: Bindings.Event -> Event
     parseEvent = \case
       Bindings.EventChar mod ch -> EventChar (Mod mod) ch
       Bindings.EventKey mod key -> EventKey (Mod mod) (Key key)
-      Bindings.EventResize nw nh -> EventResize (Width nw) (Height nh)
+      Bindings.EventResize width height -> EventResize Size {height, width}
       Bindings.EventMouse mouse x y -> EventMouse (Mouse mouse) x y
 
-present :: IO ()
-present = do
-  result <- Bindings.present
-  when (result /= Bindings.Ok) (exception "tb_present" result)
-
 print :: Column -> Row -> Word32 -> Word32 -> Text -> IO ()
-print x y fg bg str = do
-  result <-
+print x y fg bg str =
+  binding_ "tb_print" do
     ByteString.useAsCString
       (Text.encodeUtf8 str)
       (Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
-  when (result /= Bindings.Ok) (exception "tb_print" result)
 
 print2 :: Column -> Row -> Word32 -> Word32 -> Text -> IO Int
 print2 x y fg bg str = do
   size <-
     ByteString.useAsCString (Text.encodeUtf8 str) \cstr -> do
       alloca \widthPointer -> do
-        result <- Bindings.print_ex (int32_to_cint x) (int32_to_cint y) fg bg widthPointer cstr
-        when (result /= Bindings.Ok) (exception "tb_print_ex" result)
+        binding_ "tb_print_ex" (Bindings.print_ex (int32_to_cint x) (int32_to_cint y) fg bg widthPointer cstr)
         Storable.peek widthPointer
   pure (csize_to_int size)
 
@@ -646,9 +635,8 @@ print2 x y fg bg str = do
 -- set_cursor
 
 setInputMode :: InputMode -> IO ()
-setInputMode mode = do
-  result <- Bindings.set_input_mode cmode
-  when (result /= Bindings.Ok) (exception "tb_set_input_mode" result)
+setInputMode mode =
+  binding_ "tb_set_input_mode" (Bindings.set_input_mode cmode)
   where
     cmode :: Bindings.InputMode
     cmode =
@@ -659,9 +647,8 @@ setInputMode mode = do
         InputModeAlt MouseModeYes -> Bindings.InputAlt .|. Bindings.InputMouse
 
 setOutputMode :: OutputMode -> IO ()
-setOutputMode mode = do
-  result <- Bindings.set_output_mode cmode
-  when (result /= Bindings.Ok) (exception "tb_set_output_mode" result)
+setOutputMode mode =
+  binding_ "tb_set_output_mode" (Bindings.set_output_mode cmode)
   where
     cmode :: Bindings.OutputMode
     cmode =
@@ -672,22 +659,11 @@ setOutputMode mode = do
         OutputModeGrayscale -> Bindings.OutputGrayscale
         OutputModeTruecolor -> Bindings.OutputTruecolor
 
-shutdown :: IO ()
-shutdown = do
-  result <- Bindings.shutdown
-  when (result /= Bindings.Ok) (exception "tb_shutdown" result)
-
 strerror :: CInt -> IO Text
 strerror n = do
   cstring <- Bindings.strerror n
   bytes <- ByteString.unsafePackCString cstring
   pure (Text.decodeUtf8 bytes)
-
-width :: IO CInt
-width = do
-  result <- Bindings.width
-  when (result == Bindings.ErrNotInit) (exception "tb_width" result)
-  pure result
 
 --
 
@@ -698,10 +674,25 @@ data TermboxException = TermboxException
   deriving stock (Show)
   deriving anyclass (Exception)
 
+binding :: Text -> IO Bindings.Result -> IO CInt
+binding name func = do
+  result <- func
+  when (result < 0) (exception name result)
+  pure result
+
+binding_ :: Text -> IO Bindings.Result -> IO ()
+binding_ name func = do
+  result <- func
+  when (result < 0) (exception name result)
+
 exception :: Text -> Bindings.Result -> IO a
 exception function code = do
   message <- strerror code
   throwIO TermboxException {function, message}
+
+cint_to_int32 :: CInt -> Int32
+cint_to_int32 =
+  fromIntegral
 
 csize_to_int :: CSize -> Int
 csize_to_int =

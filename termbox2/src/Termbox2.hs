@@ -99,6 +99,7 @@ module Termbox2
     pollEvent,
     present,
     print,
+    print2,
     setInputMode,
     setOutputMode,
     shutdown,
@@ -119,7 +120,7 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.Encoding as Text
 import Data.Word (Word32)
-import Foreign.C.Types (CInt)
+import Foreign.C.Types (CInt, CSize)
 import Foreign.Marshal.Alloc (alloca)
 import qualified Foreign.Storable as Storable
 import qualified Termbox2.Bindings as Bindings
@@ -136,6 +137,8 @@ debug =
             then pure ()
             else do
               clear
+              c <- print2 10 10 0 0 "ン"
+              print 10 11 0 0 ("^ width = " <> Text.pack (show c))
               print 5 5 0 0 (Text.pack (show event))
               present
               loop
@@ -586,6 +589,16 @@ print x y fg bg str = do
       (Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
   when (result /= Bindings.Ok) (exception "tb_print" result)
 
+print2 :: Column -> Row -> Word32 -> Word32 -> Text -> IO Int
+print2 x y fg bg str = do
+  size <-
+    ByteString.useAsCString (Text.encodeUtf8 str) \cstr -> do
+      alloca \widthPointer -> do
+        result <- Bindings.print_ex (int32_to_cint x) (int32_to_cint y) fg bg widthPointer cstr
+        when (result /= Bindings.Ok) (exception "tb_print_ex" result)
+        Storable.peek widthPointer
+  pure (csize_to_int size)
+
 -- set_cell
 
 -- set_clear_attrs
@@ -649,6 +662,10 @@ exception :: Text -> Bindings.Result -> IO a
 exception function code = do
   message <- strerror code
   throwIO TermboxException {function, message}
+
+csize_to_int :: CSize -> Int
+csize_to_int =
+  fromIntegral
 
 int32_to_cint :: Int32 -> CInt
 int32_to_cint =

@@ -1,5 +1,6 @@
 module Termbox2.Bindings
-  ( Event (..),
+  ( -- ** Event
+    Event (..),
 
     -- ** Key
     Key,

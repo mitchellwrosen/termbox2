@@ -2,7 +2,77 @@ module Termbox2
   ( debug,
     Event (..),
     InputMode (..),
-    Termbox2.Bindings.Mouse,
+    Key
+      ( Termbox2.ArrowDown,
+        Termbox2.ArrowLeft,
+        Termbox2.ArrowRight,
+        Termbox2.ArrowUp,
+        Termbox2.BackTab,
+        Termbox2.Backspace,
+        Termbox2.Backspace2,
+        Termbox2.Ctrl2,
+        Termbox2.Ctrl3,
+        Termbox2.Ctrl4,
+        Termbox2.Ctrl5,
+        Termbox2.Ctrl6,
+        Termbox2.Ctrl7,
+        Termbox2.Ctrl8,
+        Termbox2.CtrlA,
+        Termbox2.CtrlB,
+        Termbox2.CtrlBackslash,
+        Termbox2.CtrlC,
+        Termbox2.CtrlD,
+        Termbox2.CtrlE,
+        Termbox2.CtrlF,
+        Termbox2.CtrlG,
+        Termbox2.CtrlH,
+        Termbox2.CtrlI,
+        Termbox2.CtrlJ,
+        Termbox2.CtrlK,
+        Termbox2.CtrlL,
+        Termbox2.CtrlLsqBracket,
+        Termbox2.CtrlM,
+        Termbox2.CtrlN,
+        Termbox2.CtrlO,
+        Termbox2.CtrlP,
+        Termbox2.CtrlQ,
+        Termbox2.CtrlR,
+        Termbox2.CtrlRsqBracket,
+        Termbox2.CtrlS,
+        Termbox2.CtrlSlash,
+        Termbox2.CtrlT,
+        Termbox2.CtrlTilde,
+        Termbox2.CtrlU,
+        Termbox2.CtrlUnderscore,
+        Termbox2.CtrlV,
+        Termbox2.CtrlW,
+        Termbox2.CtrlX,
+        Termbox2.CtrlY,
+        Termbox2.CtrlZ,
+        Termbox2.Delete,
+        Termbox2.End,
+        Termbox2.Enter,
+        Termbox2.Esc,
+        Termbox2.F1,
+        Termbox2.F10,
+        Termbox2.F11,
+        Termbox2.F12,
+        Termbox2.F2,
+        Termbox2.F3,
+        Termbox2.F4,
+        Termbox2.F5,
+        Termbox2.F6,
+        Termbox2.F7,
+        Termbox2.F8,
+        Termbox2.F9,
+        Termbox2.Home,
+        Termbox2.Insert,
+        Termbox2.Pgdn,
+        Termbox2.Pgup,
+        Termbox2.Space,
+        Termbox2.Tab
+      ),
+    Bindings.Mouse,
     Mod,
     alt,
     ctrl,
@@ -52,7 +122,7 @@ import Data.Word (Word32)
 import Foreign.C.Types (CInt)
 import Foreign.Marshal.Alloc (alloca)
 import qualified Foreign.Storable as Storable
-import qualified Termbox2.Bindings
+import qualified Termbox2.Bindings as Bindings
 import Prelude hiding (init, mod, print)
 
 debug :: IO ()
@@ -62,7 +132,7 @@ debug =
     setOutputMode OutputMode256
     let loop = do
           event <- pollEvent
-          if event == EventKey mempty 27
+          if event == EventKey mempty Esc
             then pure ()
             else do
               clear
@@ -73,19 +143,288 @@ debug =
 
 data Event
   = EventChar Mod Char
-  | EventKey Mod Termbox2.Bindings.Key -- FIXME better types
+  | EventKey Mod Key -- FIXME better types
   | EventResize Width Height
-  | EventMouse Termbox2.Bindings.Mouse Column Row
+  | EventMouse Bindings.Mouse Column Row
   deriving stock (Eq, Show)
 
 data InputMode
   = InputModeEsc MouseMode
   | InputModeAlt MouseMode
 
+newtype Key
+  = Key Bindings.Key
+  deriving stock (Eq)
+
+pattern ArrowDown :: Key
+pattern ArrowDown = Key Bindings.ArrowDown
+
+pattern ArrowLeft :: Key
+pattern ArrowLeft = Key Bindings.ArrowLeft
+
+pattern ArrowRight :: Key
+pattern ArrowRight = Key Bindings.ArrowRight
+
+pattern ArrowUp :: Key
+pattern ArrowUp = Key Bindings.ArrowUp
+
+pattern BackTab :: Key
+pattern BackTab = Key Bindings.BackTab
+
+pattern Backspace :: Key
+pattern Backspace = Key Bindings.Backspace
+
+pattern Backspace2 :: Key
+pattern Backspace2 = Key Bindings.Backspace2
+
+pattern Ctrl2 :: Key
+pattern Ctrl2 = Key Bindings.Ctrl2
+
+pattern Ctrl3 :: Key
+pattern Ctrl3 = Key Bindings.Ctrl3
+
+pattern Ctrl4 :: Key
+pattern Ctrl4 = Key Bindings.Ctrl4
+
+pattern Ctrl5 :: Key
+pattern Ctrl5 = Key Bindings.Ctrl5
+
+pattern Ctrl6 :: Key
+pattern Ctrl6 = Key Bindings.Ctrl6
+
+pattern Ctrl7 :: Key
+pattern Ctrl7 = Key Bindings.Ctrl7
+
+pattern Ctrl8 :: Key
+pattern Ctrl8 = Key Bindings.Ctrl8
+
+pattern CtrlA :: Key
+pattern CtrlA = Key Bindings.CtrlA
+
+pattern CtrlB :: Key
+pattern CtrlB = Key Bindings.CtrlB
+
+pattern CtrlBackslash :: Key
+pattern CtrlBackslash = Key Bindings.CtrlBackslash
+
+pattern CtrlC :: Key
+pattern CtrlC = Key Bindings.CtrlC
+
+pattern CtrlD :: Key
+pattern CtrlD = Key Bindings.CtrlD
+
+pattern CtrlE :: Key
+pattern CtrlE = Key Bindings.CtrlE
+
+pattern CtrlF :: Key
+pattern CtrlF = Key Bindings.CtrlF
+
+pattern CtrlG :: Key
+pattern CtrlG = Key Bindings.CtrlG
+
+pattern CtrlH :: Key
+pattern CtrlH = Key Bindings.CtrlH
+
+pattern CtrlI :: Key
+pattern CtrlI = Key Bindings.CtrlI
+
+pattern CtrlJ :: Key
+pattern CtrlJ = Key Bindings.CtrlJ
+
+pattern CtrlK :: Key
+pattern CtrlK = Key Bindings.CtrlK
+
+pattern CtrlL :: Key
+pattern CtrlL = Key Bindings.CtrlL
+
+pattern CtrlLsqBracket :: Key
+pattern CtrlLsqBracket = Key Bindings.CtrlLsqBracket
+
+pattern CtrlM :: Key
+pattern CtrlM = Key Bindings.CtrlM
+
+pattern CtrlN :: Key
+pattern CtrlN = Key Bindings.CtrlN
+
+pattern CtrlO :: Key
+pattern CtrlO = Key Bindings.CtrlO
+
+pattern CtrlP :: Key
+pattern CtrlP = Key Bindings.CtrlP
+
+pattern CtrlQ :: Key
+pattern CtrlQ = Key Bindings.CtrlQ
+
+pattern CtrlR :: Key
+pattern CtrlR = Key Bindings.CtrlR
+
+pattern CtrlRsqBracket :: Key
+pattern CtrlRsqBracket = Key Bindings.CtrlRsqBracket
+
+pattern CtrlS :: Key
+pattern CtrlS = Key Bindings.CtrlS
+
+pattern CtrlSlash :: Key
+pattern CtrlSlash = Key Bindings.CtrlSlash
+
+pattern CtrlT :: Key
+pattern CtrlT = Key Bindings.CtrlT
+
+pattern CtrlTilde :: Key
+pattern CtrlTilde = Key Bindings.CtrlTilde
+
+pattern CtrlU :: Key
+pattern CtrlU = Key Bindings.CtrlU
+
+pattern CtrlUnderscore :: Key
+pattern CtrlUnderscore = Key Bindings.CtrlUnderscore
+
+pattern CtrlV :: Key
+pattern CtrlV = Key Bindings.CtrlV
+
+pattern CtrlW :: Key
+pattern CtrlW = Key Bindings.CtrlW
+
+pattern CtrlX :: Key
+pattern CtrlX = Key Bindings.CtrlX
+
+pattern CtrlY :: Key
+pattern CtrlY = Key Bindings.CtrlY
+
+pattern CtrlZ :: Key
+pattern CtrlZ = Key Bindings.CtrlZ
+
+pattern Delete :: Key
+pattern Delete = Key Bindings.Delete
+
+pattern End :: Key
+pattern End = Key Bindings.End
+
+pattern Enter :: Key
+pattern Enter = Key Bindings.Enter
+
+pattern Esc :: Key
+pattern Esc = Key Bindings.Esc
+
+pattern F1 :: Key
+pattern F1 = Key Bindings.F1
+
+pattern F10 :: Key
+pattern F10 = Key Bindings.F10
+
+pattern F11 :: Key
+pattern F11 = Key Bindings.F11
+
+pattern F12 :: Key
+pattern F12 = Key Bindings.F12
+
+pattern F2 :: Key
+pattern F2 = Key Bindings.F2
+
+pattern F3 :: Key
+pattern F3 = Key Bindings.F3
+
+pattern F4 :: Key
+pattern F4 = Key Bindings.F4
+
+pattern F5 :: Key
+pattern F5 = Key Bindings.F5
+
+pattern F6 :: Key
+pattern F6 = Key Bindings.F6
+
+pattern F7 :: Key
+pattern F7 = Key Bindings.F7
+
+pattern F8 :: Key
+pattern F8 = Key Bindings.F8
+
+pattern F9 :: Key
+pattern F9 = Key Bindings.F9
+
+pattern Home :: Key
+pattern Home = Key Bindings.Home
+
+pattern Insert :: Key
+pattern Insert = Key Bindings.Insert
+
+pattern Pgdn :: Key
+pattern Pgdn = Key Bindings.Pgdn
+
+pattern Pgup :: Key
+pattern Pgup = Key Bindings.Pgup
+
+pattern Space :: Key
+pattern Space = Key Bindings.Space
+
+pattern Tab :: Key
+pattern Tab = Key Bindings.Tab
+
+instance Show Key where
+  show = \case
+    ArrowDown -> "ArrowDown"
+    ArrowLeft -> "ArrowLeft"
+    ArrowRight -> "ArrowRight"
+    ArrowUp -> "ArrowUp"
+    BackTab -> "BackTab"
+    Backspace -> "Backspace"
+    Backspace2 -> "Backspace2"
+    Ctrl4 -> "Ctrl4"
+    Ctrl5 -> "Ctrl5"
+    Ctrl6 -> "Ctrl6"
+    Ctrl7 -> "Ctrl7"
+    CtrlA -> "CtrlA"
+    CtrlB -> "CtrlB"
+    CtrlC -> "CtrlC"
+    CtrlD -> "CtrlD"
+    CtrlE -> "CtrlE"
+    CtrlF -> "CtrlF"
+    CtrlG -> "CtrlG"
+    CtrlJ -> "CtrlJ"
+    CtrlK -> "CtrlK"
+    CtrlL -> "CtrlL"
+    CtrlN -> "CtrlN"
+    CtrlO -> "CtrlO"
+    CtrlP -> "CtrlP"
+    CtrlQ -> "CtrlQ"
+    CtrlR -> "CtrlR"
+    CtrlS -> "CtrlS"
+    CtrlT -> "CtrlT"
+    CtrlTilde -> "CtrlTilde"
+    CtrlU -> "CtrlU"
+    CtrlV -> "CtrlV"
+    CtrlW -> "CtrlW"
+    CtrlX -> "CtrlX"
+    CtrlY -> "CtrlY"
+    CtrlZ -> "CtrlZ"
+    Delete -> "Delete"
+    End -> "End"
+    Enter -> "Enter"
+    Esc -> "Esc"
+    F1 -> "F1"
+    F10 -> "F10"
+    F11 -> "F11"
+    F12 -> "F12"
+    F2 -> "F2"
+    F3 -> "F3"
+    F4 -> "F4"
+    F5 -> "F5"
+    F6 -> "F6"
+    F7 -> "F7"
+    F8 -> "F8"
+    F9 -> "F9"
+    Home -> "Home"
+    Insert -> "Insert"
+    Pgdn -> "Pgdn"
+    Pgup -> "Pgup"
+    Space -> "Space"
+    Tab -> "Tab"
+    key -> error ("unknown key: " ++ show key)
+
 -- note: mod Alt is not possible in Esc input mode. hmm...
 -- open question: is key Esc possible in Alt input mode?
 newtype Mod
-  = Mod Termbox2.Bindings.Mod
+  = Mod Bindings.Mod
   deriving stock (Eq)
 
 instance Monoid Mod where
@@ -116,27 +455,27 @@ instance Show Mod where
 
 alt :: Mod
 alt =
-  Mod Termbox2.Bindings.Alt
+  Mod Bindings.Alt
 
 ctrl :: Mod
 ctrl =
-  Mod Termbox2.Bindings.Ctrl
+  Mod Bindings.Ctrl
 
 shift :: Mod
 shift =
-  Mod Termbox2.Bindings.Shift
+  Mod Bindings.Shift
 
 altd :: Mod -> Bool
 altd (Mod x) =
-  x .&. Termbox2.Bindings.Alt /= 0
+  x .&. Bindings.Alt /= 0
 
 ctrld :: Mod -> Bool
 ctrld (Mod x) =
-  x .&. Termbox2.Bindings.Ctrl /= 0
+  x .&. Bindings.Ctrl /= 0
 
 shiftd :: Mod -> Bool
 shiftd (Mod x) =
-  x .&. Termbox2.Bindings.Shift /= 0
+  x .&. Bindings.Shift /= 0
 
 data MouseMode
   = MouseModeNo
@@ -177,45 +516,45 @@ w =
 
 clear :: IO ()
 clear = do
-  result <- Termbox2.Bindings.clear
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_clear" result)
+  result <- Bindings.clear
+  when (result /= Bindings.Ok) (exception "tb_clear" result)
 
 getInputMode :: IO InputMode
 getInputMode = do
-  result <- Termbox2.Bindings.set_input_mode Termbox2.Bindings.InputCurrent
+  result <- Bindings.set_input_mode Bindings.InputCurrent
   if
-      | result == Termbox2.Bindings.InputEsc -> pure (InputModeEsc MouseModeNo)
-      | result == Termbox2.Bindings.InputEsc .|. Termbox2.Bindings.InputMouse -> pure (InputModeEsc MouseModeYes)
-      | result == Termbox2.Bindings.InputAlt -> pure (InputModeAlt MouseModeNo)
-      | result == Termbox2.Bindings.InputAlt .|. Termbox2.Bindings.InputMouse -> pure (InputModeAlt MouseModeYes)
+      | result == Bindings.InputEsc -> pure (InputModeEsc MouseModeNo)
+      | result == Bindings.InputEsc .|. Bindings.InputMouse -> pure (InputModeEsc MouseModeYes)
+      | result == Bindings.InputAlt -> pure (InputModeAlt MouseModeNo)
+      | result == Bindings.InputAlt .|. Bindings.InputMouse -> pure (InputModeAlt MouseModeYes)
       | otherwise -> exception "tb_set_input_mode" result
 
 getOutputMode :: IO OutputMode
 getOutputMode = do
-  result <- Termbox2.Bindings.set_output_mode Termbox2.Bindings.OutputCurrent
+  result <- Bindings.set_output_mode Bindings.OutputCurrent
   if
-      | result == Termbox2.Bindings.OutputNormal -> pure OutputModeNormal
-      | result == Termbox2.Bindings.Output256 -> pure OutputMode256
-      | result == Termbox2.Bindings.Output216 -> pure OutputMode216
-      | result == Termbox2.Bindings.OutputGrayscale -> pure OutputModeGrayscale
-      | result == Termbox2.Bindings.OutputTruecolor -> pure OutputModeTruecolor
+      | result == Bindings.OutputNormal -> pure OutputModeNormal
+      | result == Bindings.Output256 -> pure OutputMode256
+      | result == Bindings.Output216 -> pure OutputMode216
+      | result == Bindings.OutputGrayscale -> pure OutputModeGrayscale
+      | result == Bindings.OutputTruecolor -> pure OutputModeTruecolor
       | otherwise -> exception "tb_set_output_mode" result
 
 height :: IO CInt
 height = do
-  result <- Termbox2.Bindings.height
-  when (result == Termbox2.Bindings.ErrNotInit) (exception "tb_height" result)
+  result <- Bindings.height
+  when (result == Bindings.ErrNotInit) (exception "tb_height" result)
   pure result
 
 hideCursor :: IO ()
 hideCursor = do
-  result <- Termbox2.Bindings.hide_cursor
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_hide_cursor" result)
+  result <- Bindings.hide_cursor
+  when (result /= Bindings.Ok) (exception "tb_hide_cursor" result)
 
 init :: IO ()
 init = do
-  result <- Termbox2.Bindings.init
-  when (result /= Termbox2.Bindings.Ok && result /= Termbox2.Bindings.ErrInitAlready) (exception "tb_init" result)
+  result <- Bindings.init
+  when (result /= Bindings.Ok && result /= Bindings.ErrInitAlready) (exception "tb_init" result)
 
 -- peek_event
 
@@ -223,29 +562,29 @@ pollEvent :: IO Event
 pollEvent =
   fmap parseEvent do
     alloca \eventPointer -> do
-      result <- Termbox2.Bindings.poll_event eventPointer
-      when (result /= Termbox2.Bindings.Ok) (exception "tb_poll_event" result)
+      result <- Bindings.poll_event eventPointer
+      when (result /= Bindings.Ok) (exception "tb_poll_event" result)
       Storable.peek eventPointer
   where
-    parseEvent :: Termbox2.Bindings.Event -> Event
+    parseEvent :: Bindings.Event -> Event
     parseEvent = \case
-      Termbox2.Bindings.EventChar mod ch -> EventChar (Mod mod) ch
-      Termbox2.Bindings.EventKey mod key -> EventKey (Mod mod) key
-      Termbox2.Bindings.EventResize nw nh -> EventResize (Width nw) (Height nh)
-      Termbox2.Bindings.EventMouse key x y -> EventMouse key x y
+      Bindings.EventChar mod ch -> EventChar (Mod mod) ch
+      Bindings.EventKey mod key -> EventKey (Mod mod) (Key key)
+      Bindings.EventResize nw nh -> EventResize (Width nw) (Height nh)
+      Bindings.EventMouse key x y -> EventMouse key x y
 
 present :: IO ()
 present = do
-  result <- Termbox2.Bindings.present
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_present" result)
+  result <- Bindings.present
+  when (result /= Bindings.Ok) (exception "tb_present" result)
 
 print :: Column -> Row -> Word32 -> Word32 -> Text -> IO ()
 print x y fg bg str = do
   result <-
     ByteString.useAsCString
       (Text.encodeUtf8 str)
-      (Termbox2.Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_print" result)
+      (Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
+  when (result /= Bindings.Ok) (exception "tb_print" result)
 
 -- set_cell
 
@@ -255,46 +594,46 @@ print x y fg bg str = do
 
 setInputMode :: InputMode -> IO ()
 setInputMode mode = do
-  result <- Termbox2.Bindings.set_input_mode cmode
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_set_input_mode" result)
+  result <- Bindings.set_input_mode cmode
+  when (result /= Bindings.Ok) (exception "tb_set_input_mode" result)
   where
-    cmode :: Termbox2.Bindings.InputMode
+    cmode :: Bindings.InputMode
     cmode =
       case mode of
-        InputModeEsc MouseModeNo -> Termbox2.Bindings.InputEsc
-        InputModeEsc MouseModeYes -> Termbox2.Bindings.InputEsc .|. Termbox2.Bindings.InputMouse
-        InputModeAlt MouseModeNo -> Termbox2.Bindings.InputAlt
-        InputModeAlt MouseModeYes -> Termbox2.Bindings.InputAlt .|. Termbox2.Bindings.InputMouse
+        InputModeEsc MouseModeNo -> Bindings.InputEsc
+        InputModeEsc MouseModeYes -> Bindings.InputEsc .|. Bindings.InputMouse
+        InputModeAlt MouseModeNo -> Bindings.InputAlt
+        InputModeAlt MouseModeYes -> Bindings.InputAlt .|. Bindings.InputMouse
 
 setOutputMode :: OutputMode -> IO ()
 setOutputMode mode = do
-  result <- Termbox2.Bindings.set_output_mode cmode
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_set_output_mode" result)
+  result <- Bindings.set_output_mode cmode
+  when (result /= Bindings.Ok) (exception "tb_set_output_mode" result)
   where
-    cmode :: Termbox2.Bindings.OutputMode
+    cmode :: Bindings.OutputMode
     cmode =
       case mode of
-        OutputModeNormal -> Termbox2.Bindings.OutputNormal
-        OutputMode256 -> Termbox2.Bindings.Output256
-        OutputMode216 -> Termbox2.Bindings.Output216
-        OutputModeGrayscale -> Termbox2.Bindings.OutputGrayscale
-        OutputModeTruecolor -> Termbox2.Bindings.OutputTruecolor
+        OutputModeNormal -> Bindings.OutputNormal
+        OutputMode256 -> Bindings.Output256
+        OutputMode216 -> Bindings.Output216
+        OutputModeGrayscale -> Bindings.OutputGrayscale
+        OutputModeTruecolor -> Bindings.OutputTruecolor
 
 shutdown :: IO ()
 shutdown = do
-  result <- Termbox2.Bindings.shutdown
-  when (result /= Termbox2.Bindings.Ok) (exception "tb_shutdown" result)
+  result <- Bindings.shutdown
+  when (result /= Bindings.Ok) (exception "tb_shutdown" result)
 
 strerror :: CInt -> IO Text
 strerror n = do
-  cstring <- Termbox2.Bindings.strerror n
+  cstring <- Bindings.strerror n
   bytes <- ByteString.unsafePackCString cstring
   pure (Text.decodeUtf8 bytes)
 
 width :: IO CInt
 width = do
-  result <- Termbox2.Bindings.width
-  when (result == Termbox2.Bindings.ErrNotInit) (exception "tb_width" result)
+  result <- Bindings.width
+  when (result == Bindings.ErrNotInit) (exception "tb_width" result)
   pure result
 
 --
@@ -306,7 +645,7 @@ data TermboxException = TermboxException
   deriving stock (Show)
   deriving anyclass (Exception)
 
-exception :: Text -> Termbox2.Bindings.Result -> IO a
+exception :: Text -> Bindings.Result -> IO a
 exception function code = do
   message <- strerror code
   throwIO TermboxException {function, message}

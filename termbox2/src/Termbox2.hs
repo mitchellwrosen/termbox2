@@ -72,7 +72,14 @@ module Termbox2
         Termbox2.Space,
         Termbox2.Tab
       ),
-    Bindings.Mouse,
+    Mouse
+      ( Termbox2.MouseLeft,
+        Termbox2.MouseRight,
+        Termbox2.MouseMiddle,
+        Termbox2.MouseRelease,
+        Termbox2.MouseWheelUp,
+        Termbox2.MouseWheelDown
+      ),
     Mod,
     alt,
     ctrl,
@@ -148,7 +155,7 @@ data Event
   = EventChar Mod Char
   | EventKey Mod Key -- FIXME better types
   | EventResize Width Height
-  | EventMouse Bindings.Mouse Column Row
+  | EventMouse Mouse Column Row
   deriving stock (Eq, Show)
 
 data InputMode
@@ -424,6 +431,39 @@ instance Show Key where
     Tab -> "Tab"
     key -> error ("unknown key: " ++ show key)
 
+newtype Mouse
+  = Mouse Bindings.Mouse
+  deriving stock (Eq)
+
+pattern MouseLeft :: Mouse
+pattern MouseLeft = Mouse Bindings.MouseLeft
+
+pattern MouseRight :: Mouse
+pattern MouseRight = Mouse Bindings.MouseRight
+
+pattern MouseMiddle :: Mouse
+pattern MouseMiddle = Mouse Bindings.MouseMiddle
+
+pattern MouseRelease :: Mouse
+pattern MouseRelease = Mouse Bindings.MouseRelease
+
+pattern MouseWheelUp :: Mouse
+pattern MouseWheelUp = Mouse Bindings.MouseWheelUp
+
+pattern MouseWheelDown :: Mouse
+pattern MouseWheelDown = Mouse Bindings.MouseWheelDown
+
+{-# COMPLETE MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown #-}
+
+instance Show Mouse where
+  show = \case
+    MouseLeft -> "MouseLeft"
+    MouseRight -> "MouseRight"
+    MouseMiddle -> "MouseMiddle"
+    MouseRelease -> "MouseRelease"
+    MouseWheelUp -> "MouseWheelUp"
+    MouseWheelDown -> "MouseWheelDown"
+
 -- note: mod Alt is not possible in Esc input mode. hmm...
 -- open question: is key Esc possible in Alt input mode?
 newtype Mod
@@ -574,7 +614,7 @@ pollEvent =
       Bindings.EventChar mod ch -> EventChar (Mod mod) ch
       Bindings.EventKey mod key -> EventKey (Mod mod) (Key key)
       Bindings.EventResize nw nh -> EventResize (Width nw) (Height nh)
-      Bindings.EventMouse key x y -> EventMouse key x y
+      Bindings.EventMouse mouse x y -> EventMouse (Mouse mouse) x y
 
 present :: IO ()
 present = do

@@ -1,5 +1,30 @@
+-- | termbox2 bindings.
 module Termbox2.Bindings
-  ( -- ** Event
+  ( -- * Bindings
+    clear,
+    height,
+    hide_cursor,
+    init,
+    peek_event,
+    poll_event,
+    present,
+    print,
+    print_ex,
+    set_cell,
+    set_clear_attrs,
+    set_cursor,
+    set_input_mode,
+    set_output_mode,
+    shutdown,
+    strerror,
+    width,
+
+    -- * Types
+
+    -- ** Column
+    Column,
+
+    -- ** Event
     Event (..),
 
     -- ** Key
@@ -133,6 +158,9 @@ module Termbox2.Bindings
     pattern ErrSelect,
     pattern ErrResizeSelect,
 
+    -- ** Row
+    Row,
+
     -- ** Style
     Style,
     pattern Default,
@@ -148,26 +176,6 @@ module Termbox2.Bindings
     pattern Underline,
     pattern Reverse,
     pattern Italic,
-    _FUNC_EXTRACT_PRE,
-    _FUNC_EXTRACT_POST,
-
-    -- * API
-    clear,
-    height,
-    hide_cursor,
-    init,
-    peek_event,
-    poll_event,
-    present,
-    print,
-    set_cell,
-    set_clear_attrs,
-    set_cursor,
-    set_input_mode,
-    set_output_mode,
-    shutdown,
-    strerror,
-    width,
   )
 where
 
@@ -178,6 +186,91 @@ import Foreign.C.Types
 import Foreign.Ptr (Ptr)
 import Foreign.Storable (Storable (..))
 import Prelude hiding (init, mod, print)
+
+------------------------------------------------------------------------------------------------------------------------
+-- Bindings
+
+-- | Clear the internal back buffer with the style set by the latest call to 'set_clear_attrs' (or 'Default', if it's
+-- never been called).
+foreign import ccall unsafe "tb_clear"
+  clear :: IO Result
+
+-- | Get the height of the internal back buffer.
+foreign import ccall unsafe "tb_height"
+  height :: IO CInt
+
+-- | Hide the cursor.
+foreign import ccall unsafe "tb_hide_cursor"
+  hide_cursor :: IO Result
+
+-- | Initialize this library; this function must be called before any other functions.
+foreign import ccall unsafe "tb_init"
+  init :: IO Result
+
+-- foreign import ccall unsafe "tb_last_errno"
+--   last_errno :: IO CInt
+
+-- | Wait for an event to occur.
+--
+-- If no event is available within the given number of milliseconds, returns 'ErrNoEvent'.
+--
+-- If the underlying @poll(2)@ call is interrupted, returns 'ErrPoll'. In this case, you may check errno with
+-- 'last_errno'; if it's @EINTR@, you can safely ignore it and call 'peek_event' again.
+foreign import ccall safe "tb_peek_event"
+  peek_event :: Ptr Event -> CInt -> IO Result
+
+-- | Like 'peek_event', but cannot time out.
+foreign import ccall safe "tb_poll_event"
+  poll_event :: Ptr Event -> IO Result
+
+-- | Flush the internal back buffer to the terminal.
+foreign import ccall unsafe "tb_present"
+  present :: IO Result
+
+-- | Write a string to to the internal back buffer.
+foreign import ccall unsafe "tb_print"
+  print :: Column -> Row -> Style -> Style -> Ptr CChar -> IO Result
+
+-- | Like 'print', but also returns (as an out-parameter) the width of the printed string.
+foreign import ccall unsafe "tb_print_ex"
+  print_ex :: Column -> Row -> Style -> Style -> Ptr CSize -> Ptr CChar -> IO Result
+
+-- | Write a single character to the internal back buffer.
+foreign import ccall unsafe "tb_set_cell"
+  set_cell :: Column -> Row -> Word32 -> Style -> Style -> IO Result
+
+-- | Set the 'clear' style.
+foreign import ccall unsafe "tb_set_clear_attrs"
+  set_clear_attrs :: Style -> Style -> IO Result
+
+-- | Show the cursor at a position.
+foreign import ccall unsafe "tb_set_cursor"
+  set_cursor :: Column -> Row -> IO Result
+
+-- | Set the input mode.
+foreign import ccall unsafe "tb_set_input_mode"
+  set_input_mode :: InputMode -> IO Result
+
+-- | Set the output mode.
+foreign import ccall unsafe "tb_set_output_mode"
+  set_output_mode :: OutputMode -> IO Result
+
+-- | Finalize this library; this function must be called after all other functions.
+foreign import ccall unsafe "tb_shutdown"
+  shutdown :: IO Result
+
+-- | Render an error code as a more informative string.
+foreign import ccall unsafe "tb_strerror"
+  strerror :: Result -> IO (Ptr CChar)
+
+-- | Get the width of the internal back buffer.
+foreign import ccall unsafe "tb_width"
+  width :: IO CInt
+
+------------------------------------------------------------------------------------------------------------------------
+-- Column
+
+type Column = CInt
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Event
@@ -846,6 +939,11 @@ _ERR_SELECT = _ERR_POLL
 _ERR_RESIZE_SELECT = _ERR_RESIZE_POLL
 
 ------------------------------------------------------------------------------------------------------------------------
+-- Row
+
+type Row = CInt
+
+------------------------------------------------------------------------------------------------------------------------
 -- Style
 
 type Style = Word32
@@ -916,61 +1014,3 @@ _BOLD = 0x0100
 _UNDERLINE = 0x0200
 _REVERSE = 0x0400
 _ITALIC = 0x0800
-
-_FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: CInt
-_FUNC_EXTRACT_PRE = 0
-_FUNC_EXTRACT_POST = 1
-
-------------------------------------------------------------------------------------------------------------------------
--- Bindings
-
-foreign import ccall unsafe "tb_clear"
-  clear :: IO Result
-
-foreign import ccall unsafe "tb_height"
-  height :: IO CInt
-
-foreign import ccall unsafe "tb_hide_cursor"
-  hide_cursor :: IO Result
-
-foreign import ccall unsafe "tb_init"
-  init :: IO Result
-
--- foreign import ccall unsafe "tb_last_errno"
---   last_errno :: IO CInt
-
-foreign import ccall safe "tb_peek_event"
-  peek_event :: Ptr Event -> CInt -> IO Result
-
-foreign import ccall safe "tb_poll_event"
-  poll_event :: Ptr Event -> IO Result
-
-foreign import ccall unsafe "tb_present"
-  present :: IO Result
-
-foreign import ccall unsafe "tb_print"
-  print :: CInt -> CInt -> Word32 -> Word32 -> Ptr CChar -> IO Result
-
-foreign import ccall unsafe "tb_set_cell"
-  set_cell :: CInt -> CInt -> Word32 -> Word32 -> Word32 -> IO Result
-
-foreign import ccall unsafe "tb_set_clear_attrs"
-  set_clear_attrs :: Word32 -> Word32 -> IO Result
-
-foreign import ccall unsafe "tb_set_cursor"
-  set_cursor :: CInt -> CInt -> IO Result
-
-foreign import ccall unsafe "tb_set_input_mode"
-  set_input_mode :: InputMode -> IO Result
-
-foreign import ccall unsafe "tb_set_output_mode"
-  set_output_mode :: OutputMode -> IO Result
-
-foreign import ccall unsafe "tb_shutdown"
-  shutdown :: IO Result
-
-foreign import ccall unsafe "tb_strerror"
-  strerror :: CInt -> IO (Ptr CChar)
-
-foreign import ccall unsafe "tb_width"
-  width :: IO CInt

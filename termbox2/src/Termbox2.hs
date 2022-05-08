@@ -197,10 +197,11 @@ getOutputMode = do
       | coerce result == Termbox2.Bindings.OutputTruecolor -> pure OutputModeTruecolor
       | otherwise -> exception "tb_set_output_mode" result
 
-height :: IO ()
+height :: IO CInt
 height = do
   result <- Termbox2.Bindings.height
-  when (result == Termbox2.Bindings._ERR_NOT_INIT) (exception "tb_height" result)
+  when (coerce result == Termbox2.Bindings._ERR_NOT_INIT) (exception "tb_height" (coerce result))
+  pure result
 
 hideCursor :: IO ()
 hideCursor = do
@@ -236,7 +237,10 @@ present = do
 
 print :: Column -> Row -> Word32 -> Word32 -> Text -> IO ()
 print x y fg bg str = do
-  result <- ByteString.useAsCString (Text.encodeUtf8 str) (Termbox2.Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
+  result <-
+    ByteString.useAsCString
+      (Text.encodeUtf8 str)
+      (Termbox2.Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
   when (result /= Termbox2.Bindings._OK) (exception "tb_print" result)
 
 -- set_cell
@@ -283,10 +287,11 @@ strerror n = do
   bytes <- ByteString.unsafePackCString cstring
   pure (Text.decodeUtf8 bytes)
 
-width :: IO ()
+width :: IO CInt
 width = do
   result <- Termbox2.Bindings.width
-  when (result == Termbox2.Bindings._ERR_NOT_INIT) (exception "tb_width" result)
+  when (coerce result == Termbox2.Bindings._ERR_NOT_INIT) (exception "tb_width" (coerce result))
+  pure result
 
 --
 
@@ -297,8 +302,8 @@ data TermboxException = TermboxException
   deriving stock (Show)
   deriving anyclass (Exception)
 
-exception :: Text -> CInt -> IO a
-exception function code = do
+exception :: Text -> Termbox2.Bindings.Result -> IO a
+exception function (Termbox2.Bindings.Result code) = do
   message <- strerror code
   throwIO TermboxException {function, message}
 

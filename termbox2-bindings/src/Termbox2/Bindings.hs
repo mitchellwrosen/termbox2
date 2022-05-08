@@ -79,6 +79,7 @@ module Termbox2.Bindings
     _MOD_MOTION,
     InputMode (InputMode, InputCurrent, InputEsc, InputAlt, InputMouse),
     OutputMode (OutputMode, OutputCurrent, OutputNormal, Output256, Output216, OutputGrayscale, OutputTruecolor),
+    Result (Result),
     Style (Style, Default, Black, Red, Green, Yellow, Blue, Magenta, Cyan, White, Bold, Underline, Reverse, Italic),
     _OK,
     _ERR,
@@ -675,6 +676,79 @@ _OUTPUT_GRAYSCALE = OutputMode 4
 _OUTPUT_TRUECOLOR = OutputMode 5
 
 ------------------------------------------------------------------------------------------------------------------------
+-- Result
+
+newtype Result = Result CInt
+  deriving stock (Eq, Show)
+
+pattern Ok :: Result
+pattern Ok <- ((== _OK) -> True) where Ok = _OK
+
+pattern Err :: Result
+pattern Err <- ((== _ERR) -> True) where Err = _ERR
+
+pattern ErrNeedMore :: Result
+pattern ErrNeedMore <- ((== _ERR_NEED_MORE) -> True) where ErrNeedMore = _ERR_NEED_MORE
+
+pattern ErrInitAlready :: Result
+pattern ErrInitAlready <- ((== _ERR_INIT_ALREADY) -> True) where ErrInitAlready = _ERR_INIT_ALREADY
+
+pattern ErrInitOpen :: Result
+pattern ErrInitOpen <- ((== _ERR_INIT_OPEN) -> True) where ErrInitOpen = _ERR_INIT_OPEN
+
+_OK,
+  _ERR,
+  _ERR_NEED_MORE,
+  _ERR_INIT_ALREADY,
+  _ERR_INIT_OPEN,
+  _ERR_MEM,
+  _ERR_NO_EVENT,
+  _ERR_NO_TERM,
+  _ERR_NOT_INIT,
+  _ERR_OUT_OF_BOUNDS,
+  _ERR_READ,
+  _ERR_RESIZE_IOCTL,
+  _ERR_RESIZE_PIPE,
+  _ERR_RESIZE_SIGACTION,
+  _ERR_POLL,
+  _ERR_TCGETATTR,
+  _ERR_TCSETATTR,
+  _ERR_UNSUPPORTED_TERM,
+  _ERR_RESIZE_WRITE,
+  _ERR_RESIZE_POLL,
+  _ERR_RESIZE_READ,
+  _ERR_RESIZE_SSCANF,
+  _ERR_CAP_COLLISION ::
+    Result
+_OK = Result 0
+_ERR = Result (-1)
+_ERR_NEED_MORE = Result (-2)
+_ERR_INIT_ALREADY = Result (-3)
+_ERR_INIT_OPEN = Result (-4)
+_ERR_MEM = Result (-5)
+_ERR_NO_EVENT = Result (-6)
+_ERR_NO_TERM = Result (-7)
+_ERR_NOT_INIT = Result (-8)
+_ERR_OUT_OF_BOUNDS = Result (-9)
+_ERR_READ = Result (-10)
+_ERR_RESIZE_IOCTL = Result (-11)
+_ERR_RESIZE_PIPE = Result (-12)
+_ERR_RESIZE_SIGACTION = Result (-13)
+_ERR_POLL = Result (-14)
+_ERR_TCGETATTR = Result (-15)
+_ERR_TCSETATTR = Result (-16)
+_ERR_UNSUPPORTED_TERM = Result (-17)
+_ERR_RESIZE_WRITE = Result (-18)
+_ERR_RESIZE_POLL = Result (-19)
+_ERR_RESIZE_READ = Result (-20)
+_ERR_RESIZE_SSCANF = Result (-21)
+_ERR_CAP_COLLISION = Result (-22)
+
+_ERR_SELECT, _ERR_RESIZE_SELECT :: Result
+_ERR_SELECT = _ERR_POLL
+_ERR_RESIZE_SELECT = _ERR_RESIZE_POLL
+
+------------------------------------------------------------------------------------------------------------------------
 -- Style
 
 newtype Style = Style Word32
@@ -747,58 +821,6 @@ _UNDERLINE = Style 0x0200
 _REVERSE = Style 0x0400
 _ITALIC = Style 0x0800
 
-_OK,
-  _ERR,
-  _ERR_NEED_MORE,
-  _ERR_INIT_ALREADY,
-  _ERR_INIT_OPEN,
-  _ERR_MEM,
-  _ERR_NO_EVENT,
-  _ERR_NO_TERM,
-  _ERR_NOT_INIT,
-  _ERR_OUT_OF_BOUNDS,
-  _ERR_READ,
-  _ERR_RESIZE_IOCTL,
-  _ERR_RESIZE_PIPE,
-  _ERR_RESIZE_SIGACTION,
-  _ERR_POLL,
-  _ERR_TCGETATTR,
-  _ERR_TCSETATTR,
-  _ERR_UNSUPPORTED_TERM,
-  _ERR_RESIZE_WRITE,
-  _ERR_RESIZE_POLL,
-  _ERR_RESIZE_READ,
-  _ERR_RESIZE_SSCANF,
-  _ERR_CAP_COLLISION ::
-    CInt
-_OK = 0
-_ERR = -1
-_ERR_NEED_MORE = -2
-_ERR_INIT_ALREADY = -3
-_ERR_INIT_OPEN = -4
-_ERR_MEM = -5
-_ERR_NO_EVENT = -6
-_ERR_NO_TERM = -7
-_ERR_NOT_INIT = -8
-_ERR_OUT_OF_BOUNDS = -9
-_ERR_READ = -10
-_ERR_RESIZE_IOCTL = -11
-_ERR_RESIZE_PIPE = -12
-_ERR_RESIZE_SIGACTION = -13
-_ERR_POLL = -14
-_ERR_TCGETATTR = -15
-_ERR_TCSETATTR = -16
-_ERR_UNSUPPORTED_TERM = -17
-_ERR_RESIZE_WRITE = -18
-_ERR_RESIZE_POLL = -19
-_ERR_RESIZE_READ = -20
-_ERR_RESIZE_SSCANF = -21
-_ERR_CAP_COLLISION = -22
-
-_ERR_SELECT, _ERR_RESIZE_SELECT :: CInt
-_ERR_SELECT = _ERR_POLL
-_ERR_RESIZE_SELECT = _ERR_RESIZE_POLL
-
 _FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: CInt
 _FUNC_EXTRACT_PRE = 0
 _FUNC_EXTRACT_POST = 1
@@ -807,49 +829,49 @@ _FUNC_EXTRACT_POST = 1
 -- Bindings
 
 foreign import ccall unsafe "tb_clear"
-  clear :: IO CInt
+  clear :: IO Result
 
 foreign import ccall unsafe "tb_height"
   height :: IO CInt
 
 foreign import ccall unsafe "tb_hide_cursor"
-  hide_cursor :: IO CInt
+  hide_cursor :: IO Result
 
 foreign import ccall unsafe "tb_init"
-  init :: IO CInt
+  init :: IO Result
 
 -- foreign import ccall unsafe "tb_last_errno"
 --   last_errno :: IO CInt
 
 foreign import ccall safe "tb_peek_event"
-  peek_event :: Ptr Event -> CInt -> IO CInt
+  peek_event :: Ptr Event -> CInt -> IO Result
 
 foreign import ccall safe "tb_poll_event"
-  poll_event :: Ptr Event -> IO CInt
+  poll_event :: Ptr Event -> IO Result
 
 foreign import ccall unsafe "tb_present"
-  present :: IO CInt
+  present :: IO Result
 
 foreign import ccall unsafe "tb_print"
-  print :: CInt -> CInt -> Word32 -> Word32 -> Ptr CChar -> IO CInt
+  print :: CInt -> CInt -> Word32 -> Word32 -> Ptr CChar -> IO Result
 
 foreign import ccall unsafe "tb_set_cell"
-  set_cell :: CInt -> CInt -> Word32 -> Word32 -> Word32 -> IO CInt
+  set_cell :: CInt -> CInt -> Word32 -> Word32 -> Word32 -> IO Result
 
 foreign import ccall unsafe "tb_set_clear_attrs"
-  set_clear_attrs :: Word32 -> Word32 -> IO CInt
+  set_clear_attrs :: Word32 -> Word32 -> IO Result
 
 foreign import ccall unsafe "tb_set_cursor"
-  set_cursor :: CInt -> CInt -> IO CInt
+  set_cursor :: CInt -> CInt -> IO Result
 
 foreign import ccall unsafe "tb_set_input_mode"
-  set_input_mode :: InputMode -> IO CInt
+  set_input_mode :: InputMode -> IO Result
 
 foreign import ccall unsafe "tb_set_output_mode"
-  set_output_mode :: OutputMode -> IO CInt
+  set_output_mode :: OutputMode -> IO Result
 
 foreign import ccall unsafe "tb_shutdown"
-  shutdown :: IO CInt
+  shutdown :: IO Result
 
 foreign import ccall unsafe "tb_strerror"
   strerror :: CInt -> IO (Ptr CChar)

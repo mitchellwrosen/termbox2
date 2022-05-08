@@ -1,113 +1,156 @@
 module Termbox2.Bindings
   ( Event (..),
-    Key
-      ( Key,
-        ArrowDown,
-        ArrowLeft,
-        ArrowRight,
-        ArrowUp,
-        BackTab,
-        Backspace,
-        Backspace2,
-        Ctrl2,
-        Ctrl3,
-        Ctrl4,
-        Ctrl5,
-        Ctrl6,
-        Ctrl7,
-        Ctrl8,
-        CtrlA,
-        CtrlB,
-        CtrlBackslash,
-        CtrlC,
-        CtrlD,
-        CtrlE,
-        CtrlF,
-        CtrlG,
-        CtrlH,
-        CtrlI,
-        CtrlJ,
-        CtrlK,
-        CtrlL,
-        CtrlLsqBracket,
-        CtrlM,
-        CtrlN,
-        CtrlO,
-        CtrlP,
-        CtrlQ,
-        CtrlR,
-        CtrlRsqBracket,
-        CtrlS,
-        CtrlSlash,
-        CtrlT,
-        CtrlTilde,
-        CtrlU,
-        CtrlUnderscore,
-        CtrlV,
-        CtrlW,
-        CtrlX,
-        CtrlY,
-        CtrlZ,
-        Delete,
-        End,
-        Enter,
-        Esc,
-        F1,
-        F10,
-        F11,
-        F12,
-        F2,
-        F3,
-        F4,
-        F5,
-        F6,
-        F7,
-        F8,
-        F9,
-        Home,
-        Insert,
-        Pgdn,
-        Pgup,
-        Space,
-        Tab
-      ),
-    Mod (Mod, Alt, Ctrl, Shift, Motion),
-    Mouse (Mouse, MouseLeft, MouseRight, MouseMiddle, MouseRelease, MouseWheelUp, MouseWheelDown),
-    _MOD_ALT,
-    _MOD_CTRL,
-    _MOD_SHIFT,
-    _MOD_MOTION,
-    InputMode (InputMode, InputCurrent, InputEsc, InputAlt, InputMouse),
-    OutputMode (OutputMode, OutputCurrent, OutputNormal, Output256, Output216, OutputGrayscale, OutputTruecolor),
-    Result (Result),
-    Style (Style, Default, Black, Red, Green, Yellow, Blue, Magenta, Cyan, White, Bold, Underline, Reverse, Italic),
-    _OK,
-    _ERR,
-    _ERR_NEED_MORE,
-    _ERR_INIT_ALREADY,
-    _ERR_INIT_OPEN,
-    _ERR_MEM,
-    _ERR_NO_EVENT,
-    _ERR_NO_TERM,
-    _ERR_NOT_INIT,
-    _ERR_OUT_OF_BOUNDS,
-    _ERR_READ,
-    _ERR_RESIZE_IOCTL,
-    _ERR_RESIZE_PIPE,
-    _ERR_RESIZE_SIGACTION,
-    _ERR_POLL,
-    _ERR_TCGETATTR,
-    _ERR_TCSETATTR,
-    _ERR_UNSUPPORTED_TERM,
-    _ERR_RESIZE_WRITE,
-    _ERR_RESIZE_POLL,
-    _ERR_RESIZE_READ,
-    _ERR_RESIZE_SSCANF,
-    _ERR_CAP_COLLISION,
-    _ERR_SELECT,
-    _ERR_RESIZE_SELECT,
+
+    -- ** Key
+    Key,
+    pattern ArrowDown,
+    pattern ArrowLeft,
+    pattern ArrowRight,
+    pattern ArrowUp,
+    pattern BackTab,
+    pattern Backspace,
+    pattern Backspace2,
+    pattern Ctrl2,
+    pattern Ctrl3,
+    pattern Ctrl4,
+    pattern Ctrl5,
+    pattern Ctrl6,
+    pattern Ctrl7,
+    pattern Ctrl8,
+    pattern CtrlA,
+    pattern CtrlB,
+    pattern CtrlBackslash,
+    pattern CtrlC,
+    pattern CtrlD,
+    pattern CtrlE,
+    pattern CtrlF,
+    pattern CtrlG,
+    pattern CtrlH,
+    pattern CtrlI,
+    pattern CtrlJ,
+    pattern CtrlK,
+    pattern CtrlL,
+    pattern CtrlLsqBracket,
+    pattern CtrlM,
+    pattern CtrlN,
+    pattern CtrlO,
+    pattern CtrlP,
+    pattern CtrlQ,
+    pattern CtrlR,
+    pattern CtrlRsqBracket,
+    pattern CtrlS,
+    pattern CtrlSlash,
+    pattern CtrlT,
+    pattern CtrlTilde,
+    pattern CtrlU,
+    pattern CtrlUnderscore,
+    pattern CtrlV,
+    pattern CtrlW,
+    pattern CtrlX,
+    pattern CtrlY,
+    pattern CtrlZ,
+    pattern Delete,
+    pattern End,
+    pattern Enter,
+    pattern Esc,
+    pattern F1,
+    pattern F10,
+    pattern F11,
+    pattern F12,
+    pattern F2,
+    pattern F3,
+    pattern F4,
+    pattern F5,
+    pattern F6,
+    pattern F7,
+    pattern F8,
+    pattern F9,
+    pattern Home,
+    pattern Insert,
+    pattern Pgdn,
+    pattern Pgup,
+    pattern Space,
+    pattern Tab,
+
+    -- ** Mod
+    Mod,
+    pattern Alt,
+    pattern Ctrl,
+    pattern Shift,
+    pattern Motion,
+
+    -- ** Mouse
+    Mouse,
+    pattern MouseLeft,
+    pattern MouseRight,
+    pattern MouseMiddle,
+    pattern MouseRelease,
+    pattern MouseWheelUp,
+    pattern MouseWheelDown,
+
+    -- ** Input mode
+    InputMode,
+    pattern InputCurrent,
+    pattern InputEsc,
+    pattern InputAlt,
+    pattern InputMouse,
+
+    -- ** Output mode
+    OutputMode,
+    pattern OutputCurrent,
+    pattern OutputNormal,
+    pattern Output256,
+    pattern Output216,
+    pattern OutputGrayscale,
+    pattern OutputTruecolor,
+
+    -- ** Result
+    Result,
+    pattern Ok,
+    pattern Err,
+    pattern ErrNeedMore,
+    pattern ErrInitAlready,
+    pattern ErrInitOpen,
+    pattern ErrMem,
+    pattern ErrNoEvent,
+    pattern ErrNoTerm,
+    pattern ErrNotInit,
+    pattern ErrOutOfBounds,
+    pattern ErrRead,
+    pattern ErrResizeIoctl,
+    pattern ErrResizePipe,
+    pattern ErrResizeSigaction,
+    pattern ErrPoll,
+    pattern ErrTcgetattr,
+    pattern ErrTcsetattr,
+    pattern ErrUnsupportedTerm,
+    pattern ErrResizeWrite,
+    pattern ErrResizePoll,
+    pattern ErrResizeRead,
+    pattern ErrResizeSscanf,
+    pattern ErrCapCollision,
+    pattern ErrSelect,
+    pattern ErrResizeSelect,
+
+    -- ** Style
+    Style,
+    pattern Default,
+    pattern Black,
+    pattern Red,
+    pattern Green,
+    pattern Yellow,
+    pattern Blue,
+    pattern Magenta,
+    pattern Cyan,
+    pattern White,
+    pattern Bold,
+    pattern Underline,
+    pattern Reverse,
+    pattern Italic,
     _FUNC_EXTRACT_PRE,
     _FUNC_EXTRACT_POST,
+
+    -- * API
     clear,
     height,
     hide_cursor,
@@ -127,7 +170,6 @@ module Termbox2.Bindings
   )
 where
 
-import Data.Bits (Bits)
 import qualified Data.Char as Char
 import Data.Int (Int32)
 import Data.Word (Word16, Word32, Word8)
@@ -163,8 +205,8 @@ instance Storable Event where
             if key == 0
               then do
                 ch <- peekByteOff eventPointer 4
-                pure (EventChar (Mod mod) (Char.chr (fromIntegral @Word32 @Int ch)))
-              else pure (EventKey (Mod mod) (Key key))
+                pure (EventChar mod (Char.chr (fromIntegral @Word32 @Int ch)))
+              else pure (EventKey mod key)
         | type_ == _EVENT_RESIZE -> do
             w <- peekByteOff eventPointer 8
             h <- peekByteOff eventPointer 12
@@ -173,17 +215,17 @@ instance Storable Event where
             key <- peekByteOff eventPointer 2
             x <- peekByteOff eventPointer 16
             y <- peekByteOff eventPointer 20
-            pure (EventMouse (Mouse key) x y)
+            pure (EventMouse key x y)
         | otherwise -> error ("unknown event type: " ++ show type_)
 
   poke :: Ptr Event -> Event -> IO ()
   poke eventPointer = \case
-    EventChar (Mod mod) ch -> do
+    EventChar mod ch -> do
       pokeByteOff eventPointer 0 _EVENT_KEY
       pokeByteOff eventPointer 1 mod
       pokeByteOff eventPointer 2 (0 :: Word16)
       pokeByteOff eventPointer 4 ch
-    EventKey (Mod mod) (Key key) -> do
+    EventKey mod key -> do
       pokeByteOff eventPointer 0 _EVENT_KEY
       pokeByteOff eventPointer 1 mod
       pokeByteOff eventPointer 2 key
@@ -192,7 +234,7 @@ instance Storable Event where
       pokeByteOff eventPointer 0 _EVENT_RESIZE
       pokeByteOff eventPointer 8 w
       pokeByteOff eventPointer 12 h
-    EventMouse (Mouse key) x y -> do
+    EventMouse key x y -> do
       pokeByteOff eventPointer 0 _EVENT_MOUSE
       pokeByteOff eventPointer 2 key
       pokeByteOff eventPointer 16 x
@@ -210,9 +252,7 @@ _EVENT_MOUSE = 3
 ------------------------------------------------------------------------------------------------------------------------
 -- Input mode
 
-newtype InputMode = InputMode CInt
-  deriving stock (Eq, Show)
-  deriving newtype (Bits)
+type InputMode = CInt
 
 pattern InputCurrent :: InputMode
 pattern InputCurrent <- ((== _INPUT_CURRENT) -> True) where InputCurrent = _INPUT_CURRENT
@@ -227,16 +267,15 @@ pattern InputMouse :: InputMode
 pattern InputMouse <- ((== _INPUT_MOUSE) -> True) where InputMouse = _INPUT_MOUSE
 
 _INPUT_CURRENT, _INPUT_ESC, _INPUT_ALT, _INPUT_MOUSE :: InputMode
-_INPUT_CURRENT = InputMode 0
-_INPUT_ESC = InputMode 1
-_INPUT_ALT = InputMode 2
-_INPUT_MOUSE = InputMode 4
+_INPUT_CURRENT = 0
+_INPUT_ESC = 1
+_INPUT_ALT = 2
+_INPUT_MOUSE = 4
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Key
 
-newtype Key = Key Word16
-  deriving stock (Eq, Show)
+type Key = Word16
 
 pattern CtrlTilde :: Key
 pattern CtrlTilde <- ((== _KEY_CTRL_TILDE) -> True) where CtrlTilde = _KEY_CTRL_TILDE
@@ -511,81 +550,79 @@ _KEY_CTRL_TILDE,
   _KEY_ARROW_RIGHT,
   _KEY_BACK_TAB ::
     Key
-_KEY_CTRL_TILDE = Key 0x00
-_KEY_CTRL_2 = Key 0x00
-_KEY_CTRL_A = Key 0x01
-_KEY_CTRL_B = Key 0x02
-_KEY_CTRL_C = Key 0x03
-_KEY_CTRL_D = Key 0x04
-_KEY_CTRL_E = Key 0x05
-_KEY_CTRL_F = Key 0x06
-_KEY_CTRL_G = Key 0x07
-_KEY_BACKSPACE = Key 0x08
-_KEY_CTRL_H = Key 0x08
-_KEY_TAB = Key 0x09
-_KEY_CTRL_I = Key 0x09
-_KEY_CTRL_J = Key 0x0a
-_KEY_CTRL_K = Key 0x0b
-_KEY_CTRL_L = Key 0x0c
-_KEY_ENTER = Key 0x0d
-_KEY_CTRL_M = Key 0x0d
-_KEY_CTRL_N = Key 0x0e
-_KEY_CTRL_O = Key 0x0f
-_KEY_CTRL_P = Key 0x10
-_KEY_CTRL_Q = Key 0x11
-_KEY_CTRL_R = Key 0x12
-_KEY_CTRL_S = Key 0x13
-_KEY_CTRL_T = Key 0x14
-_KEY_CTRL_U = Key 0x15
-_KEY_CTRL_V = Key 0x16
-_KEY_CTRL_W = Key 0x17
-_KEY_CTRL_X = Key 0x18
-_KEY_CTRL_Y = Key 0x19
-_KEY_CTRL_Z = Key 0x1a
-_KEY_ESC = Key 0x1b
-_KEY_CTRL_LSQ_BRACKET = Key 0x1b
-_KEY_CTRL_3 = Key 0x1b
-_KEY_CTRL_4 = Key 0x1c
-_KEY_CTRL_BACKSLASH = Key 0x1c
-_KEY_CTRL_5 = Key 0x1d
-_KEY_CTRL_RSQ_BRACKET = Key 0x1d
-_KEY_CTRL_6 = Key 0x1e
-_KEY_CTRL_7 = Key 0x1f
-_KEY_CTRL_SLASH = Key 0x1f
-_KEY_CTRL_UNDERSCORE = Key 0x1f
-_KEY_SPACE = Key 0x20
-_KEY_BACKSPACE2 = Key 0x7f
-_KEY_CTRL_8 = Key 0x7f
-_KEY_F1 = Key (0xffff - 0)
-_KEY_F2 = Key (0xffff - 1)
-_KEY_F3 = Key (0xffff - 2)
-_KEY_F4 = Key (0xffff - 3)
-_KEY_F5 = Key (0xffff - 4)
-_KEY_F6 = Key (0xffff - 5)
-_KEY_F7 = Key (0xffff - 6)
-_KEY_F8 = Key (0xffff - 7)
-_KEY_F9 = Key (0xffff - 8)
-_KEY_F10 = Key (0xffff - 9)
-_KEY_F11 = Key (0xffff - 10)
-_KEY_F12 = Key (0xffff - 11)
-_KEY_INSERT = Key (0xffff - 12)
-_KEY_DELETE = Key (0xffff - 13)
-_KEY_HOME = Key (0xffff - 14)
-_KEY_END = Key (0xffff - 15)
-_KEY_PGUP = Key (0xffff - 16)
-_KEY_PGDN = Key (0xffff - 17)
-_KEY_ARROW_UP = Key (0xffff - 18)
-_KEY_ARROW_DOWN = Key (0xffff - 19)
-_KEY_ARROW_LEFT = Key (0xffff - 20)
-_KEY_ARROW_RIGHT = Key (0xffff - 21)
-_KEY_BACK_TAB = Key (0xffff - 22)
+_KEY_CTRL_TILDE = 0x00
+_KEY_CTRL_2 = 0x00
+_KEY_CTRL_A = 0x01
+_KEY_CTRL_B = 0x02
+_KEY_CTRL_C = 0x03
+_KEY_CTRL_D = 0x04
+_KEY_CTRL_E = 0x05
+_KEY_CTRL_F = 0x06
+_KEY_CTRL_G = 0x07
+_KEY_BACKSPACE = 0x08
+_KEY_CTRL_H = 0x08
+_KEY_TAB = 0x09
+_KEY_CTRL_I = 0x09
+_KEY_CTRL_J = 0x0a
+_KEY_CTRL_K = 0x0b
+_KEY_CTRL_L = 0x0c
+_KEY_ENTER = 0x0d
+_KEY_CTRL_M = 0x0d
+_KEY_CTRL_N = 0x0e
+_KEY_CTRL_O = 0x0f
+_KEY_CTRL_P = 0x10
+_KEY_CTRL_Q = 0x11
+_KEY_CTRL_R = 0x12
+_KEY_CTRL_S = 0x13
+_KEY_CTRL_T = 0x14
+_KEY_CTRL_U = 0x15
+_KEY_CTRL_V = 0x16
+_KEY_CTRL_W = 0x17
+_KEY_CTRL_X = 0x18
+_KEY_CTRL_Y = 0x19
+_KEY_CTRL_Z = 0x1a
+_KEY_ESC = 0x1b
+_KEY_CTRL_LSQ_BRACKET = 0x1b
+_KEY_CTRL_3 = 0x1b
+_KEY_CTRL_4 = 0x1c
+_KEY_CTRL_BACKSLASH = 0x1c
+_KEY_CTRL_5 = 0x1d
+_KEY_CTRL_RSQ_BRACKET = 0x1d
+_KEY_CTRL_6 = 0x1e
+_KEY_CTRL_7 = 0x1f
+_KEY_CTRL_SLASH = 0x1f
+_KEY_CTRL_UNDERSCORE = 0x1f
+_KEY_SPACE = 0x20
+_KEY_BACKSPACE2 = 0x7f
+_KEY_CTRL_8 = 0x7f
+_KEY_F1 = 0xffff - 0
+_KEY_F2 = 0xffff - 1
+_KEY_F3 = 0xffff - 2
+_KEY_F4 = 0xffff - 3
+_KEY_F5 = 0xffff - 4
+_KEY_F6 = 0xffff - 5
+_KEY_F7 = 0xffff - 6
+_KEY_F8 = 0xffff - 7
+_KEY_F9 = 0xffff - 8
+_KEY_F10 = 0xffff - 9
+_KEY_F11 = 0xffff - 10
+_KEY_F12 = 0xffff - 11
+_KEY_INSERT = 0xffff - 12
+_KEY_DELETE = 0xffff - 13
+_KEY_HOME = 0xffff - 14
+_KEY_END = 0xffff - 15
+_KEY_PGUP = 0xffff - 16
+_KEY_PGDN = 0xffff - 17
+_KEY_ARROW_UP = 0xffff - 18
+_KEY_ARROW_DOWN = 0xffff - 19
+_KEY_ARROW_LEFT = 0xffff - 20
+_KEY_ARROW_RIGHT = 0xffff - 21
+_KEY_BACK_TAB = 0xffff - 22
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Mod
 
-newtype Mod = Mod Word8
-  deriving stock (Eq, Show)
-  deriving newtype (Bits)
+type Mod = Word8
 
 pattern Alt :: Mod
 pattern Alt <- ((== _MOD_ALT) -> True) where Alt = _MOD_ALT
@@ -600,16 +637,15 @@ pattern Motion :: Mod
 pattern Motion <- ((== _MOD_MOTION) -> True) where Motion = _MOD_MOTION
 
 _MOD_ALT, _MOD_CTRL, _MOD_SHIFT, _MOD_MOTION :: Mod
-_MOD_ALT = Mod 1
-_MOD_CTRL = Mod 2
-_MOD_SHIFT = Mod 4
-_MOD_MOTION = Mod 8
+_MOD_ALT = 1
+_MOD_CTRL = 2
+_MOD_SHIFT = 4
+_MOD_MOTION = 8
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Mouse
 
-newtype Mouse = Mouse Word16
-  deriving stock (Eq, Show)
+type Mouse = Word16
 
 pattern MouseLeft :: Mouse
 pattern MouseLeft <- ((== _KEY_MOUSE_LEFT) -> True) where MouseLeft = _KEY_MOUSE_LEFT
@@ -638,19 +674,17 @@ _KEY_MOUSE_LEFT,
   _KEY_MOUSE_WHEEL_UP,
   _KEY_MOUSE_WHEEL_DOWN ::
     Mouse
-_KEY_MOUSE_LEFT = Mouse (0xffff - 23)
-_KEY_MOUSE_RIGHT = Mouse (0xffff - 24)
-_KEY_MOUSE_MIDDLE = Mouse (0xffff - 25)
-_KEY_MOUSE_RELEASE = Mouse (0xffff - 26)
-_KEY_MOUSE_WHEEL_UP = Mouse (0xffff - 27)
-_KEY_MOUSE_WHEEL_DOWN = Mouse (0xffff - 28)
+_KEY_MOUSE_LEFT = 0xffff - 23
+_KEY_MOUSE_RIGHT = 0xffff - 24
+_KEY_MOUSE_MIDDLE = 0xffff - 25
+_KEY_MOUSE_RELEASE = 0xffff - 26
+_KEY_MOUSE_WHEEL_UP = 0xffff - 27
+_KEY_MOUSE_WHEEL_DOWN = 0xffff - 28
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Output mode
 
-newtype OutputMode = OutputMode CInt
-  deriving stock (Eq, Show)
-  deriving newtype (Bits)
+type OutputMode = CInt
 
 pattern OutputCurrent :: OutputMode
 pattern OutputCurrent <- ((== _OUTPUT_CURRENT) -> True) where OutputCurrent = _OUTPUT_CURRENT
@@ -671,18 +705,17 @@ pattern OutputTruecolor :: OutputMode
 pattern OutputTruecolor <- ((== _OUTPUT_TRUECOLOR) -> True) where OutputTruecolor = _OUTPUT_TRUECOLOR
 
 _OUTPUT_CURRENT, _OUTPUT_NORMAL, _OUTPUT_256, _OUTPUT_216, _OUTPUT_GRAYSCALE, _OUTPUT_TRUECOLOR :: OutputMode
-_OUTPUT_CURRENT = OutputMode 0
-_OUTPUT_NORMAL = OutputMode 1
-_OUTPUT_256 = OutputMode 2
-_OUTPUT_216 = OutputMode 3
-_OUTPUT_GRAYSCALE = OutputMode 4
-_OUTPUT_TRUECOLOR = OutputMode 5
+_OUTPUT_CURRENT = 0
+_OUTPUT_NORMAL = 1
+_OUTPUT_256 = 2
+_OUTPUT_216 = 3
+_OUTPUT_GRAYSCALE = 4
+_OUTPUT_TRUECOLOR = 5
 
 ------------------------------------------------------------------------------------------------------------------------
 -- Result
 
-newtype Result = Result CInt
-  deriving stock (Eq, Show)
+type Result = CInt
 
 pattern Ok :: Result
 pattern Ok <- ((== _OK) -> True) where Ok = _OK
@@ -698,6 +731,66 @@ pattern ErrInitAlready <- ((== _ERR_INIT_ALREADY) -> True) where ErrInitAlready 
 
 pattern ErrInitOpen :: Result
 pattern ErrInitOpen <- ((== _ERR_INIT_OPEN) -> True) where ErrInitOpen = _ERR_INIT_OPEN
+
+pattern ErrMem :: Result
+pattern ErrMem <- ((== _ERR_MEM) -> True) where ErrMem = _ERR_MEM
+
+pattern ErrNoEvent :: Result
+pattern ErrNoEvent <- ((== _ERR_NO_EVENT) -> True) where ErrNoEvent = _ERR_NO_EVENT
+
+pattern ErrNoTerm :: Result
+pattern ErrNoTerm <- ((== _ERR_NO_TERM) -> True) where ErrNoTerm = _ERR_NO_TERM
+
+pattern ErrNotInit :: Result
+pattern ErrNotInit <- ((== _ERR_NOT_INIT) -> True) where ErrNotInit = _ERR_NOT_INIT
+
+pattern ErrOutOfBounds :: Result
+pattern ErrOutOfBounds <- ((== _ERR_OUT_OF_BOUNDS) -> True) where ErrOutOfBounds = _ERR_OUT_OF_BOUNDS
+
+pattern ErrRead :: Result
+pattern ErrRead <- ((== _ERR_READ) -> True) where ErrRead = _ERR_READ
+
+pattern ErrResizeIoctl :: Result
+pattern ErrResizeIoctl <- ((== _ERR_RESIZE_IOCTL) -> True) where ErrResizeIoctl = _ERR_RESIZE_IOCTL
+
+pattern ErrResizePipe :: Result
+pattern ErrResizePipe <- ((== _ERR_RESIZE_PIPE) -> True) where ErrResizePipe = _ERR_RESIZE_PIPE
+
+pattern ErrResizeSigaction :: Result
+pattern ErrResizeSigaction <- ((== _ERR_RESIZE_SIGACTION) -> True) where ErrResizeSigaction = _ERR_RESIZE_SIGACTION
+
+pattern ErrPoll :: Result
+pattern ErrPoll <- ((== _ERR_POLL) -> True) where ErrPoll = _ERR_POLL
+
+pattern ErrTcgetattr :: Result
+pattern ErrTcgetattr <- ((== _ERR_TCGETATTR) -> True) where ErrTcgetattr = _ERR_TCGETATTR
+
+pattern ErrTcsetattr :: Result
+pattern ErrTcsetattr <- ((== _ERR_TCSETATTR) -> True) where ErrTcsetattr = _ERR_TCSETATTR
+
+pattern ErrUnsupportedTerm :: Result
+pattern ErrUnsupportedTerm <- ((== _ERR_UNSUPPORTED_TERM) -> True) where ErrUnsupportedTerm = _ERR_UNSUPPORTED_TERM
+
+pattern ErrResizeWrite :: Result
+pattern ErrResizeWrite <- ((== _ERR_RESIZE_WRITE) -> True) where ErrResizeWrite = _ERR_RESIZE_WRITE
+
+pattern ErrResizePoll :: Result
+pattern ErrResizePoll <- ((== _ERR_RESIZE_POLL) -> True) where ErrResizePoll = _ERR_RESIZE_POLL
+
+pattern ErrResizeRead :: Result
+pattern ErrResizeRead <- ((== _ERR_RESIZE_READ) -> True) where ErrResizeRead = _ERR_RESIZE_READ
+
+pattern ErrResizeSscanf :: Result
+pattern ErrResizeSscanf <- ((== _ERR_RESIZE_SSCANF) -> True) where ErrResizeSscanf = _ERR_RESIZE_SSCANF
+
+pattern ErrCapCollision :: Result
+pattern ErrCapCollision <- ((== _ERR_CAP_COLLISION) -> True) where ErrCapCollision = _ERR_CAP_COLLISION
+
+pattern ErrSelect :: Result
+pattern ErrSelect <- ((== _ERR_SELECT) -> True) where ErrSelect = _ERR_SELECT
+
+pattern ErrResizeSelect :: Result
+pattern ErrResizeSelect <- ((== _ERR_RESIZE_SELECT) -> True) where ErrResizeSelect = _ERR_RESIZE_SELECT
 
 _OK,
   _ERR,
@@ -723,29 +816,29 @@ _OK,
   _ERR_RESIZE_SSCANF,
   _ERR_CAP_COLLISION ::
     Result
-_OK = Result 0
-_ERR = Result (-1)
-_ERR_NEED_MORE = Result (-2)
-_ERR_INIT_ALREADY = Result (-3)
-_ERR_INIT_OPEN = Result (-4)
-_ERR_MEM = Result (-5)
-_ERR_NO_EVENT = Result (-6)
-_ERR_NO_TERM = Result (-7)
-_ERR_NOT_INIT = Result (-8)
-_ERR_OUT_OF_BOUNDS = Result (-9)
-_ERR_READ = Result (-10)
-_ERR_RESIZE_IOCTL = Result (-11)
-_ERR_RESIZE_PIPE = Result (-12)
-_ERR_RESIZE_SIGACTION = Result (-13)
-_ERR_POLL = Result (-14)
-_ERR_TCGETATTR = Result (-15)
-_ERR_TCSETATTR = Result (-16)
-_ERR_UNSUPPORTED_TERM = Result (-17)
-_ERR_RESIZE_WRITE = Result (-18)
-_ERR_RESIZE_POLL = Result (-19)
-_ERR_RESIZE_READ = Result (-20)
-_ERR_RESIZE_SSCANF = Result (-21)
-_ERR_CAP_COLLISION = Result (-22)
+_OK = 0
+_ERR = -1
+_ERR_NEED_MORE = -2
+_ERR_INIT_ALREADY = -3
+_ERR_INIT_OPEN = -4
+_ERR_MEM = -5
+_ERR_NO_EVENT = -6
+_ERR_NO_TERM = -7
+_ERR_NOT_INIT = -8
+_ERR_OUT_OF_BOUNDS = -9
+_ERR_READ = -10
+_ERR_RESIZE_IOCTL = -11
+_ERR_RESIZE_PIPE = -12
+_ERR_RESIZE_SIGACTION = -13
+_ERR_POLL = -14
+_ERR_TCGETATTR = -15
+_ERR_TCSETATTR = -16
+_ERR_UNSUPPORTED_TERM = -17
+_ERR_RESIZE_WRITE = -18
+_ERR_RESIZE_POLL = -19
+_ERR_RESIZE_READ = -20
+_ERR_RESIZE_SSCANF = -21
+_ERR_CAP_COLLISION = -22
 
 _ERR_SELECT, _ERR_RESIZE_SELECT :: Result
 _ERR_SELECT = _ERR_POLL
@@ -754,8 +847,7 @@ _ERR_RESIZE_SELECT = _ERR_RESIZE_POLL
 ------------------------------------------------------------------------------------------------------------------------
 -- Style
 
-newtype Style = Style Word32
-  deriving stock (Eq, Show)
+type Style = Word32
 
 pattern Default :: Style
 pattern Default <- ((== _DEFAULT) -> True) where Default = _DEFAULT
@@ -810,19 +902,19 @@ _DEFAULT,
   _REVERSE,
   _ITALIC ::
     Style
-_DEFAULT = Style 0x0000
-_BLACK = Style 0x0001
-_RED = Style 0x0002
-_GREEN = Style 0x0003
-_YELLOW = Style 0x0004
-_BLUE = Style 0x0005
-_MAGENTA = Style 0x0006
-_CYAN = Style 0x0007
-_WHITE = Style 0x0008
-_BOLD = Style 0x0100
-_UNDERLINE = Style 0x0200
-_REVERSE = Style 0x0400
-_ITALIC = Style 0x0800
+_DEFAULT = 0x0000
+_BLACK = 0x0001
+_RED = 0x0002
+_GREEN = 0x0003
+_YELLOW = 0x0004
+_BLUE = 0x0005
+_MAGENTA = 0x0006
+_CYAN = 0x0007
+_WHITE = 0x0008
+_BOLD = 0x0100
+_UNDERLINE = 0x0200
+_REVERSE = 0x0400
+_ITALIC = 0x0800
 
 _FUNC_EXTRACT_PRE, _FUNC_EXTRACT_POST :: CInt
 _FUNC_EXTRACT_PRE = 0

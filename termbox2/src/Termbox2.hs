@@ -2,7 +2,7 @@ module Termbox2
   ( debug,
     Event (..),
     InputMode (..),
-    Termbox2.Bindings.Mouse (..),
+    Termbox2.Bindings.Mouse,
     Mod,
     alt,
     ctrl,
@@ -41,7 +41,6 @@ import Control.Monad (guard, when)
 import Data.Bits ((.&.), (.|.))
 import qualified Data.ByteString as ByteString (useAsCString)
 import qualified Data.ByteString.Unsafe as ByteString
-import Data.Coerce (coerce)
 import Data.Functor (($>))
 import Data.Int (Int32)
 import qualified Data.List as List
@@ -63,7 +62,7 @@ debug =
     setOutputMode OutputMode256
     let loop = do
           event <- pollEvent
-          if event == EventKey mempty (Termbox2.Bindings.Key 27)
+          if event == EventKey mempty 27
             then pure ()
             else do
               clear
@@ -90,7 +89,7 @@ newtype Mod
   deriving stock (Eq)
 
 instance Monoid Mod where
-  mempty = Mod (Termbox2.Bindings.Mod 0)
+  mempty = Mod 0
   mappend = (<>)
 
 instance Semigroup Mod where
@@ -129,15 +128,15 @@ shift =
 
 altd :: Mod -> Bool
 altd (Mod x) =
-  x .&. Termbox2.Bindings.Alt /= Termbox2.Bindings.Mod 0
+  x .&. Termbox2.Bindings.Alt /= 0
 
 ctrld :: Mod -> Bool
 ctrld (Mod x) =
-  x .&. Termbox2.Bindings.Ctrl /= Termbox2.Bindings.Mod 0
+  x .&. Termbox2.Bindings.Ctrl /= 0
 
 shiftd :: Mod -> Bool
 shiftd (Mod x) =
-  x .&. Termbox2.Bindings.Shift /= Termbox2.Bindings.Mod 0
+  x .&. Termbox2.Bindings.Shift /= 0
 
 data MouseMode
   = MouseModeNo
@@ -179,44 +178,44 @@ w =
 clear :: IO ()
 clear = do
   result <- Termbox2.Bindings.clear
-  when (result /= Termbox2.Bindings._OK) (exception "tb_clear" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_clear" result)
 
 getInputMode :: IO InputMode
 getInputMode = do
   result <- Termbox2.Bindings.set_input_mode Termbox2.Bindings.InputCurrent
   if
-      | coerce result == Termbox2.Bindings.InputEsc -> pure (InputModeEsc MouseModeNo)
-      | coerce result == Termbox2.Bindings.InputEsc .|. Termbox2.Bindings.InputMouse -> pure (InputModeEsc MouseModeYes)
-      | coerce result == Termbox2.Bindings.InputAlt -> pure (InputModeAlt MouseModeNo)
-      | coerce result == Termbox2.Bindings.InputAlt .|. Termbox2.Bindings.InputMouse -> pure (InputModeAlt MouseModeYes)
+      | result == Termbox2.Bindings.InputEsc -> pure (InputModeEsc MouseModeNo)
+      | result == Termbox2.Bindings.InputEsc .|. Termbox2.Bindings.InputMouse -> pure (InputModeEsc MouseModeYes)
+      | result == Termbox2.Bindings.InputAlt -> pure (InputModeAlt MouseModeNo)
+      | result == Termbox2.Bindings.InputAlt .|. Termbox2.Bindings.InputMouse -> pure (InputModeAlt MouseModeYes)
       | otherwise -> exception "tb_set_input_mode" result
 
 getOutputMode :: IO OutputMode
 getOutputMode = do
   result <- Termbox2.Bindings.set_output_mode Termbox2.Bindings.OutputCurrent
   if
-      | coerce result == Termbox2.Bindings.OutputNormal -> pure OutputModeNormal
-      | coerce result == Termbox2.Bindings.Output256 -> pure OutputMode256
-      | coerce result == Termbox2.Bindings.Output216 -> pure OutputMode216
-      | coerce result == Termbox2.Bindings.OutputGrayscale -> pure OutputModeGrayscale
-      | coerce result == Termbox2.Bindings.OutputTruecolor -> pure OutputModeTruecolor
+      | result == Termbox2.Bindings.OutputNormal -> pure OutputModeNormal
+      | result == Termbox2.Bindings.Output256 -> pure OutputMode256
+      | result == Termbox2.Bindings.Output216 -> pure OutputMode216
+      | result == Termbox2.Bindings.OutputGrayscale -> pure OutputModeGrayscale
+      | result == Termbox2.Bindings.OutputTruecolor -> pure OutputModeTruecolor
       | otherwise -> exception "tb_set_output_mode" result
 
 height :: IO CInt
 height = do
   result <- Termbox2.Bindings.height
-  when (coerce result == Termbox2.Bindings._ERR_NOT_INIT) (exception "tb_height" (coerce result))
+  when (result == Termbox2.Bindings.ErrNotInit) (exception "tb_height" result)
   pure result
 
 hideCursor :: IO ()
 hideCursor = do
   result <- Termbox2.Bindings.hide_cursor
-  when (result /= Termbox2.Bindings._OK) (exception "tb_hide_cursor" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_hide_cursor" result)
 
 init :: IO ()
 init = do
   result <- Termbox2.Bindings.init
-  when (result /= Termbox2.Bindings._OK && result /= Termbox2.Bindings._ERR_INIT_ALREADY) (exception "tb_init" result)
+  when (result /= Termbox2.Bindings.Ok && result /= Termbox2.Bindings.ErrInitAlready) (exception "tb_init" result)
 
 -- peek_event
 
@@ -225,7 +224,7 @@ pollEvent =
   fmap parseEvent do
     alloca \eventPointer -> do
       result <- Termbox2.Bindings.poll_event eventPointer
-      when (result /= Termbox2.Bindings._OK) (exception "tb_poll_event" result)
+      when (result /= Termbox2.Bindings.Ok) (exception "tb_poll_event" result)
       Storable.peek eventPointer
   where
     parseEvent :: Termbox2.Bindings.Event -> Event
@@ -238,7 +237,7 @@ pollEvent =
 present :: IO ()
 present = do
   result <- Termbox2.Bindings.present
-  when (result /= Termbox2.Bindings._OK) (exception "tb_present" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_present" result)
 
 print :: Column -> Row -> Word32 -> Word32 -> Text -> IO ()
 print x y fg bg str = do
@@ -246,7 +245,7 @@ print x y fg bg str = do
     ByteString.useAsCString
       (Text.encodeUtf8 str)
       (Termbox2.Bindings.print (int32_to_cint x) (int32_to_cint y) fg bg)
-  when (result /= Termbox2.Bindings._OK) (exception "tb_print" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_print" result)
 
 -- set_cell
 
@@ -257,7 +256,7 @@ print x y fg bg str = do
 setInputMode :: InputMode -> IO ()
 setInputMode mode = do
   result <- Termbox2.Bindings.set_input_mode cmode
-  when (result /= Termbox2.Bindings._OK) (exception "tb_set_input_mode" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_set_input_mode" result)
   where
     cmode :: Termbox2.Bindings.InputMode
     cmode =
@@ -270,7 +269,7 @@ setInputMode mode = do
 setOutputMode :: OutputMode -> IO ()
 setOutputMode mode = do
   result <- Termbox2.Bindings.set_output_mode cmode
-  when (result /= Termbox2.Bindings._OK) (exception "tb_set_output_mode" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_set_output_mode" result)
   where
     cmode :: Termbox2.Bindings.OutputMode
     cmode =
@@ -284,7 +283,7 @@ setOutputMode mode = do
 shutdown :: IO ()
 shutdown = do
   result <- Termbox2.Bindings.shutdown
-  when (result /= Termbox2.Bindings._OK) (exception "tb_shutdown" result)
+  when (result /= Termbox2.Bindings.Ok) (exception "tb_shutdown" result)
 
 strerror :: CInt -> IO Text
 strerror n = do
@@ -295,7 +294,7 @@ strerror n = do
 width :: IO CInt
 width = do
   result <- Termbox2.Bindings.width
-  when (coerce result == Termbox2.Bindings._ERR_NOT_INIT) (exception "tb_width" (coerce result))
+  when (result == Termbox2.Bindings.ErrNotInit) (exception "tb_width" result)
   pure result
 
 --
@@ -308,7 +307,7 @@ data TermboxException = TermboxException
   deriving anyclass (Exception)
 
 exception :: Text -> Termbox2.Bindings.Result -> IO a
-exception function (Termbox2.Bindings.Result code) = do
+exception function code = do
   message <- strerror code
   throwIO TermboxException {function, message}
 
